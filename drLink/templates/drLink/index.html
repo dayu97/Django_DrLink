@@ -1,0 +1,437 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block content %}
+
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script>
+$(function(){
+
+	var barchart = c3.generate({
+		bindto: '#barchart',
+		data: {
+			columns: [
+				['의사', {{newChart.0}}],
+				['환자', {{newChart.1}}],
+				['예약', {{newChart.2}}]
+			],
+			axes: {
+				예약: 'y2'
+			},
+			type: 'bar'
+		},
+		axis: {
+			y2: {
+				show: true
+			}
+		},
+		bar: {
+			width: {
+				ratio: 0.5
+			}
+		},
+		option : {
+			responsive: false
+		}
+	});
+
+	var linedata =[]; <!--금액 담겨 있음-->
+	var linex=[] <!--날짜 담겨 있음-->
+
+	var len = $('input[name=line]').length;
+
+	for(var i = 0 ; i<len ; i++){
+		linedata.push([$('input[name=line_val]').eq(i).val()]);
+	}
+	for(var i = 0 ; i<len ; i++){
+		linex.push([$('input[name=line]').eq(i).val()]);
+	}
+
+	var test = '{{sum_price}}'
+
+	var lineChart = c3.generate({
+		bindto: '#linechart',
+		data: {
+			columns: linedata
+		},
+    color: {
+        pattern: ['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
+    }
+	});
+
+	var chartData=[];
+	var len = $('input[name=p_age]').length;
+	for(var i = 0 ; i<len ; i++){
+		chartData.push([$('input[name=p_age]').eq(i).val(),$('input[name=p_count]').eq(i).val()]);
+	}
+	var piechart = c3.generate({
+		bindto:'#piechart',
+		data: {
+			columns: chartData,
+			type : 'pie',
+		},
+    color: {
+        pattern: ['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
+    }
+	});//차트함수
+
+	var gender=[];
+	var len = $('input[name=gend_cnt]').length;
+	for(var i = 0 ; i<len ; i++){
+		gender.push([$('input[name=gend]').eq(i).val(),$('input[name=gend_cnt]').eq(i).val()]);
+	}
+	var piechart = c3.generate({
+		bindto:'#piegender',
+		data: {
+			columns: gender,
+			type : 'pie',
+		},
+		color: {
+			pattern: ['#9edae5','#d62728','#c7c8c7', '#c49c94', '#9467bd', '#ff9896', '#c5b0d5', '#8c564b',  '#e377c2', '#f7b6d2', '#7f7f7f', '#bcbd22', '#dbdb8d', '#17becf', ]
+		}
+	});//차트함수
+
+});//시작함수
+</script>
+
+<div class="content container-fluid">
+<!-- Page Header -->
+	<div class="page-header">
+		<div class="row">
+			<div class="col-sm-12">
+			<h3 class="page-title">관리자님 환영합니다!</h3>
+			</div>
+		</div>
+	</div>
+<!-- /Page Header -->
+	<div class="row" style="justify-content: center; margin: 20px;">
+		<div class="col-md-12 col-lg-6">
+			<div class="card card-chart">
+			<div class="card-header">
+				<h4 class="card-title">신규 데이터</h4>
+			</div>
+			<div class="card-body">
+				<div id="barchart"></div>
+			</div>
+			</div>
+		</div>
+		<div class="col-md-12 col-lg-6">
+			<div class="card card-chart">
+			<div class="card-header">
+				<h4 class="card-title">수익</h4>
+			</div>
+			<div class="card-body">
+				<div id="linechart"></div>
+			</div>
+		</div>
+		</div>
+	</div>
+
+	{% for line,line_val in sum_price%}
+	<input type="hidden" name="line" class="line" value="{{line}}">
+	<input type="hidden" name="line_val" class="line_val" value="{{line_val}}">
+	{% endfor %}
+	{% for p_age,p_count in patient_count%}
+	<input type="hidden" name="p_age" class="p_age" value="{{p_age}}">
+	<input type="hidden" name="p_count" class="p_count" value="{{p_count}}">
+	{% endfor %}
+
+	{% for gend,gend_cnt in gender%}
+	<input type="hidden" name="gend" class="gend" value="{{gend}}">
+	<input type="hidden" name="gend_cnt" class="gend_cnt" value="{{gend_cnt}}">
+	{% endfor %}
+
+	<div class="row" style="justify-content: center; margin: 20px;">
+		<div class="col-md-12 col-lg-6">
+			<div class="card card-chart">
+			<div class="card-header">
+				<h4 class="card-title">고객분포(연령별)</h4>
+			</div>
+			<div class="card-body">
+				<div id="piechart">	</div>
+			</div>
+			</div>
+		</div>
+		<div class="col-md-12 col-lg-6">
+			<div class="card card-chart">
+			<div class="card-header">
+				<h4 class="card-title">고객분포(성별)</h4>
+			</div>
+			<div class="card-body">
+				<div id="piegender"></div>
+			</div>
+		</div>
+		</div>
+	</div>
+
+	<div class="row" >
+		<div class="col-xl-3 col-sm-6 col-12">
+			<div class="card">
+				<div class="card-body">
+					<div class="dash-widget-header">
+						<span class="dash-widget-icon text-primary border-primary">
+						<i class="fe fe-users"></i>
+						</span>
+						<div class="dash-count">
+						<h3>{{doctorList.0.9}}</h3>
+						</div>
+					</div>
+					<div class="dash-widget-info">
+						<h6 class="text-muted">누적 의사 회원</h6>
+						<div class="progress progress-sm">
+							<div class="progress-bar bg-primary w-50"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-3 col-sm-6 col-12">
+			<div class="card">
+				<div class="card-body">
+					<div class="dash-widget-header">
+						<span class="dash-widget-icon text-success">
+						<i class="fe fe-credit-card"></i>
+						</span>
+						<div class="dash-count">
+						<h3>{{patientList.0.9}}</h3>
+						</div>
+					</div>
+					<div class="dash-widget-info">
+
+					<h6 class="text-muted">누적 환자 회원</h6>
+						<div class="progress progress-sm">
+						<div class="progress-bar bg-success w-50"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-3 col-sm-6 col-12">
+			<div class="card">
+				<div class="card-body">
+					<div class="dash-widget-header">
+						<span class="dash-widget-icon text-danger border-danger">
+							<i class="fe fe-money"></i>
+						</span>
+						<div class="dash-count">
+							<h3>￦{{sum_price.1.1|intcomma}}</h3>
+						</div>
+					</div>
+					<div class="dash-widget-info">
+
+					<h6 class="text-muted">누적 수익</h6>
+						<div class="progress progress-sm">
+							<div class="progress-bar bg-danger w-50"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-3 col-sm-6 col-12">
+			<div class="card">
+				<div class="card-body">
+					<div class="dash-widget-header">
+						<span class="dash-widget-icon text-warning border-warning">
+							<i class="fe fe-folder"></i>
+						</span>
+						<div class="dash-count">
+							<h3>{{appointmentList.0.11}}</h3>
+						</div>
+					</div>
+					<div class="dash-widget-info">
+
+					<h6 class="text-muted">누적 예약 건수</h6>
+						<div class="progress progress-sm">
+							<div class="progress-bar bg-warning w-50"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12 col-lg-6">
+
+		<!-- Sales Chart -->
+			<div class="card card-chart">
+				<div class="card-header">
+					<h4 class="card-title">수익</h4>
+				</div>
+				<div class="card-body">
+					<div id="morrisArea"></div>
+				</div>
+			</div>
+		<!-- /Sales Chart -->
+
+		</div>
+	<div class="col-md-12 col-lg-6">
+
+	<!-- Invoice Chart -->
+	<div class="card card-chart">
+		<div class="card-header">
+			<h4 class="card-title">고객 현황</h4>
+		</div>
+		<div class="card-body">
+			<div id="morrisLine"></div>
+		</div>
+	</div>
+	<!-- /Invoice Chart -->
+
+	</div>
+	</div>
+
+
+<!-- Recent Orders -->
+	<div class="card card-table">
+		<div class="card-header">
+			<h4 class="card-title">예약 목록</h4>
+		</div>
+		<div class="card-body">
+			<div class="table-responsive">
+				<table class="table table-hover table-center mb-0">
+					<thead>
+						<tr>
+							<th>의사명</th>
+							<th>환자명</th>
+							<th>과목</th>
+							<th>예약시간</th>
+							<th>상태</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% for appointment in appointmentList %}
+						<tr>
+							<td>
+								<h2 class="table-avatar">
+								<a href="doctor_profile?doctor_num={{appointment.0}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/doctor/profileImg/{{appointment.2}}" alt="User Image"></a>
+								<a href="doctor_profile?doctor_num={{appointment.0}}">{{appointment.1}}</a>
+								</h2>
+							</td>
+							<td>
+								<h2 class="table-avatar">
+								<a href="patient_profile?patient_num={{appointment.4}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/patient/profileImg/{{appointment.6}}" alt="User Image"></a>
+								<a href="patient_profile?patient_num={{appointment.4}}">{{appointment.5}}</a>
+								</h2>
+							</td>
+							<td>{{appointment.3}}</td>
+							<td>{{ appointment.8|slice:"0:4" }}년 {{ appointment.8|slice:"5:7" }}월 {{ appointment.8|slice:"8:10" }}일 <span class="text-primary d-block">{{appointment.9}}</span></td>
+							<td>
+								<div class="status-toggle">
+									<input type="checkbox" id="status_1" class="check" checked>
+									<label for="status_1" class="checktoggle">checkbox</label>
+								</div>
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	<button type="button" class="btn btn-link" onclick="location.href='appointment_list'">더보기...</button>
+	</div>
+<!-- /Recent Orders -->
+
+
+	<div class="row">
+		<div class="col-md-6 d-flex">
+
+		<!-- Recent Orders -->
+			<div class="card card-table flex-fill">
+			<div class="card-header">
+			<h4 class="card-title">의사 목록</h4>
+			</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-hover table-center mb-0">
+							<thead>
+								<tr>
+								<th>의사명</th>
+								<th>진료과목</th>
+								<th>월 예약건수</th>
+								<th>평점</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for doctor in doctorList %}
+								<tr>
+									<td>
+										<h2 class="table-avatar">
+										<a href="doctor_profile?doctor_num={{doctor.0}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/doctor/profileImg/{{doctor.2}}" alt="User Image"></a>
+										<a href="doctor_profile?doctor_num={{doctor.0}}">{{doctor.1}}</a>
+										</h2>
+									</td>
+									<td>{{doctor.3}}</td>
+									<td>{{doctor.8}}</td>
+									<td>
+										<i class="fe fe-star text-warning"></i>
+										<i class="fe fe-star text-warning"></i>
+										<i class="fe fe-star text-warning"></i>
+										<i class="fe fe-star text-warning"></i>
+										<i class="fe fe-star-o text-secondary"></i>
+									</td>
+								</tr>
+
+							{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			<button type="button" class="btn btn-link" onclick="location.href='doctor_list'">더보기...</button>
+			</div>
+		<!-- /Recent Orders -->
+
+		</div>
+		<div class="col-md-6 d-flex">
+
+		<!-- Feed Activity -->
+			<div class="card  card-table flex-fill">
+				<div class="card-header">
+					<h4 class="card-title">환자 목록</h4>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-hover table-center mb-0">
+							<thead>
+								<tr>
+									<th>환자명</th>
+									<th>연락처</th>
+									<th>마지막 예약일</th>
+									<th>결제금액</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for patient in patientList %}
+								<tr>
+									<td>
+										<h2 class="table-avatar">
+											<a href="patient_profile?patient_num={{patient.10}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/patient/profileImg/{{patient.3}}" alt="User Image"></a>
+											<a href="patient_profile?patient_num={{patient.10}}">{{patient.2}} </a>
+										</h2>
+									</td>
+									<td>8286329170</td>
+									<td>20 Oct 2019</td>
+									<td class="text-right">$100.00</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			<button type="button" class="btn btn-link" onclick="location.href='patient_list'">더보기...</button>
+			</div>
+		<!-- /Feed Activity -->
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+
+
+
+		</div>
+	</div>
+
+</div>
+
+
+{% endblock content %}

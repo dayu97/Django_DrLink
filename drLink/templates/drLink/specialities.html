@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% block content %}
+<script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script>
+	$(document).ready(function(){
+		// 수정버튼
+		$('.btn.btn-sm.bg-success-light').click(function(){
+			var index =$(this).closest('tr').index();
+			$('#dep_name').val($('tbody > tr:eq('+index+')').find('td:eq(1)').find('h2').find('a').text());
+			$('#dep_num').val($('tbody > tr:eq('+index+')').find('td:eq(0)').find('span').text());
+		});
+		// 삭제버튼
+		$('.btn.btn-sm.bg-danger-light').click(function(){
+			var index = $(this).closest('tr').index();
+			$('.dep_num').val($('tbody > tr:eq('+index+')').find('td:eq(0)').find('span').text());
+		});
+
+
+	});
+</script>
+                <div class="content container-fluid">
+				
+					<!-- Page Header -->
+					<div class="page-header">
+						<div class="row">
+							<div class="col-sm-7 col-auto">
+								<h3 class="page-title">진료과목 관리</h3>
+								<ul class="breadcrumb">
+									<li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+									<li class="breadcrumb-item active">진료과목</li>
+								</ul>
+							</div>
+							<div class="col-sm-5 col">
+								<a href="#Add_Specialities_details" data-toggle="modal" class="btn btn-primary float-right mt-2">추가</a>
+							</div>
+						</div>
+					</div>
+					<!-- /Page Header -->
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="card">
+								<div class="card-body">
+									<div class="table-responsive">
+										<table class="datatable table table-hover table-center mb-0">
+											<thead>
+												<tr>
+													<th>과목번호</th>
+													<th>진료과목명</th>
+													<th class="text-center">수정 및 삭제</th>
+												</tr>
+											</thead>
+											<tbody>
+											{% for speciality in specialities %}
+												<tr>
+													<td>#SP0<span>{{speciality.0}}</span></td>
+													
+													<td>
+														<h2 class="table-avatar">
+															<!--
+															<a href="profile" class="avatar avatar-sm mr-2">
+																<img class="avatar-img" src="{{baseUrl}}/img/specialities/specialities-01.png" alt="Speciality">
+															</a>
+															-->
+															<a>{{speciality.1}}</a>
+														</h2>
+													</td>
+												
+													<td class="text-center">
+														<div class="actions">
+															<a class="btn btn-sm bg-success-light" data-toggle="modal" href="#edit_specialities_details">
+																<i class="fe fe-pencil"></i> 수정
+															</a>
+															<a  data-toggle="modal" href="#delete_modal" class="btn btn-sm bg-danger-light">
+																<i class="fe fe-trash"></i> 삭제
+															</a>
+														</div>
+													</td>
+												</tr>
+											{% endfor %}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>			
+					</div>
+				</div>			
+			</div>
+			<!-- /Page Wrapper -->
+			
+			
+			<!-- Add Modal -->
+			<div class="modal fade" id="Add_Specialities_details" aria-hidden="true" role="dialog">
+				<div class="modal-dialog modal-dialog-centered" role="document" >
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">진료과목 추가</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<form action="insertSpeciality" method="post">
+								{% csrf_token %}
+								<div class="row form-row">
+									<div class="col-12 col-sm-6">
+										<div class="form-group">
+											<label>진료과목명</label>
+											<input type="text" class="form-control" name="dep_name">
+										</div>
+									</div>
+								<!--
+									<div class="col-12 col-sm-6">
+										<div class="form-group">
+											<label>이미지</label>
+											<input type="file"  class="form-control">
+										</div>
+									</div>
+								-->
+								</div>
+								<button type="submit" class="btn btn-primary btn-block">저장하기</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /ADD Modal -->
+			
+			<!-- Edit Details Modal -->
+			<div class="modal fade" id="edit_specialities_details" aria-hidden="true" role="dialog">
+				<div class="modal-dialog modal-dialog-centered" role="document" >
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">진료과목 수정</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<form action="updateSpeciality" method="post">
+								{% csrf_token %}
+								<div class="row form-row">
+									<div class="col-12 col-sm-6">
+										<div class="form-group">
+											<label>진료과목</label>
+											<input type="text" class="form-control" value="" name="dep_name" id="dep_name">
+										</div>
+									</div>
+								<!--
+									<div class="col-12 col-sm-6">
+										<div class="form-group">
+											<label>이미지</label>
+											<input type="file"  class="form-control">
+										</div>
+									</div>
+								-->
+								</div>
+								<button type="submit" class="btn btn-primary btn-block">저장하기</button>
+								<input type="hidden" name="dep_num" id="dep_num" value="" />
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /Edit Details Modal -->
+			
+			<!-- Delete Modal -->
+			<div class="modal fade" id="delete_modal" aria-hidden="true" role="dialog">
+				<div class="modal-dialog modal-dialog-centered" role="document" >
+					<div class="modal-content">
+					<!--	<div class="modal-header">
+							<h5 class="modal-title">Delete</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>-->
+						<div class="modal-body">
+							<div class="form-content p-2">
+								<h4 class="modal-title">진료과목 삭제</h4>
+								<p class="mb-4">정말로 해당 진료과목을 삭제하시겠습니까?</p>
+								<form action="deleteSpeciality" method="post">
+									{% csrf_token %}
+								<input type="hidden" name="dep_num" value="" class="dep_num" >
+								<input type="submit" class="btn btn-primary" value="삭제하기" >
+								<button type="button" class="btn btn-danger" data-dismiss="modal">취소하기</button></form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /Delete Modal -->
+        </div>
+		<!-- /Main Wrapper -->
+{% endblock content %}

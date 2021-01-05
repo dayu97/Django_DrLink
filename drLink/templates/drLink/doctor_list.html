@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% block content %}
+<script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script>
+	$(document).ready(function(){
+		// 삭제버튼
+		$('.btn.btn-sm.bg-danger-light').click(function(){
+			var index = $(this).closest('tr').index();
+			$('.doctor_num').val($('tbody > tr:eq('+index+')').find('td:eq(0)').find('span').text());
+		});
+	});
+
+</script>
+<div class="content container-fluid">
+
+<!-- Page Header -->
+<div class="page-header">
+	<div class="row">
+		<div class="col-sm-12">
+			<h3 class="page-title">의사목록</h3>
+			<ul class="breadcrumb">
+				<li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+				<li class="breadcrumb-item"><a href="javascript:(0);">계정관리</a></li>
+				<li class="breadcrumb-item active">의사관리</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<!-- /Page Header -->
+
+<div class="row">
+	<div class="col-sm-12">
+		<div class="card">
+			<div class="card-body">
+				<div class="table-responsive">
+					<table class="datatable table table-hover table-center mb-0">
+						<thead>
+							<tr>
+								<th class="text-center">No</th>
+								<th class="text-center">의사이름</th>
+								<th class="text-center">진료과목</th>
+								<th class="text-center">입사일</th>
+								<th class="text-center">연락처</th>
+								<th class="text-center">상태</th>
+								<th class="text-center"></th>
+
+							</tr>
+						</thead>
+						<tbody>
+							<!--  의사 리스트 -->
+							{% for doctor in doctorList %}
+							<tr>
+								<input type="hidden" name="doctor_num" value="{{doctor.0}}" >
+								<td class="text-center">D00<span>{{doctor.0}}</span></td>
+								<td class="text-center">
+									<h2 class="table-avatar">
+										<a href="doctor_profile?doctor_num={{doctor.0}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/doctor/profileImg/{{doctor.2}}" alt="User Image"></a>
+										<a href="doctor_profile?doctor_num={{doctor.0}}">{{doctor.1}}</a>
+									</h2>
+								</td>
+								<td class="text-center">{{doctor.3}}</td>
+								<td class="text-center">{{ doctor.6|slice:"0:4" }}년 {{ doctor.6|slice:"5:7" }}월 {{ doctor.6|slice:"8:10" }}일</td>
+								<td class="text-center">{{ doctor.4|slice:"0:3" }}-{{ doctor.4|slice:"3:7" }}-{{ doctor.4|slice:"7:11" }}</td>
+								<td class="text-center">
+									{% if doctor.7 %}
+									<span class="badge badge-pill bg-danger-light">퇴직</span>
+									{% else %}
+									<span class="badge badge-pill bg-success-light">재직</span>
+									{% endif %}
+								</td>
+								<td class="text-center">
+									<div class="actions">
+										<a  data-toggle="modal" href="#delete_modal" class="btn btn-sm bg-danger-light">
+											<i class="fe fe-trash"></i> 삭제
+										</a>
+									</div>
+								</td>
+							</tr>
+							<!--  의사 리스트 -->
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="blog-pagination">
+					<nav>
+						<ul class="pagination justify-content-center">
+							{% for p in p_num %}
+							<li class="page-item">
+								<a class="page-link" href="doctor_list?p_num={{p}}">{{p}}</a>
+							</li>
+							{% endfor %}
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+</div>
+</div>
+<!-- /Page Wrapper -->
+
+</div>
+<!-- /Main Wrapper -->
+
+
+<!-- Edit Details Modal -->
+<div class="modal fade" id="edit_specialities_details" aria-hidden="true" role="dialog">
+<div class="modal-dialog modal-dialog-centered" role="document" >
+<div class="modal-content">
+	<div class="modal-header">
+		<h5 class="modal-title">진료과목 수정</h5>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<form>
+			<div class="row form-row">
+				<div class="col-12 col-sm-6">
+					<div class="form-group">
+						<label>진료과목</label>
+						<input type="text" class="form-control" value="진료과목">
+					</div>
+				</div>
+				<div class="col-12 col-sm-6">
+					<div class="form-group">
+						<label>입사일</label>
+						<input type="text" class="form-control" value="입사일">
+					</div>
+				</div>
+				<div class="col-12 col-sm-6">
+					<div class="form-group">
+						<label>연봉</label>
+						<input type="text" class="form-control" value="연봉">
+					</div>
+				</div>
+			</div>
+			<button type="submit" class="btn btn-primary btn-block">저장하기</button>
+		</form>
+	</div>
+</div>
+</div>
+</div>
+<!-- /Edit Details Modal -->
+
+<!-- Delete Modal -->
+<div class="modal fade" id="delete_modal" aria-hidden="true" role="dialog">
+<div class="modal-dialog modal-dialog-centered" role="document" >
+<div class="modal-content">
+<!--	<div class="modal-header">
+		<h5 class="modal-title">Delete</h5>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>-->
+	<div class="modal-body">
+		<div class="form-content p-2">
+			<h4 class="modal-title">의사 삭제</h4>
+			<p class="mb-4">정말로 해당 의사를 삭제하시겠습니까?</p>
+			<form action="deleteDoctor" method="post">
+				{% csrf_token %}
+				<input type="hidden" name="doctor_num" value="" class="doctor_num">
+				<input type="submit" class="btn btn-primary" value="삭제하기"> </input>
+				<button type="button" class="btn btn-danger" data-dismiss="modal">취소하기</button>
+			</form>
+		</div>
+	</div>
+</div>
+</div>
+</div>
+<!-- /Delete Modal -->
+</div>
+<!-- /Main Wrapper -->
+{% endblock content %}

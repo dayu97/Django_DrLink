@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="content container-fluid">
+
+<!-- Page Header -->
+<div class="page-header">
+	<div class="row">
+		<div class="col-sm-12">
+			<h3 class="page-title">예약관리</h3>
+			<ul class="breadcrumb">
+				<li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+				<li class="breadcrumb-item active">예약관리</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<!-- /Page Header -->
+<div class="row">
+	<div class="col-md-12">
+
+		<!-- Recent Orders -->
+		<div class="card">
+			<div class="card-body">
+				<div class="table-responsive">
+					<table class="datatable table table-hover table-center mb-0">
+						<thead>
+							<tr>
+								<th class="text-center">예약번호</th>
+								<th class="text-center">의사이름</th>
+								<th class="text-center">진료과목</th>
+								<th class="text-center">환자이름</th>
+								<th class="text-center">예약시간</th>
+								<!--<th>예약상태</th>-->
+								<th class="text-center">예약일</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- 리스트 -->
+							{% for appointment in appointmentList %}
+							<tr>
+								<td class="text-center">No. {{appointment.7}}</td>
+								<td class="text-center">
+									<h2 class="table-avatar">
+										<a href="doctor_profile?doctor_num={{appointment.0}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/doctor/profileImg/{{appointment.2}}" alt="User Image"></a>
+										<a href="doctor_profile?doctor_num={{appointment.0}}">{{appointment.1}}</a>
+									</h2>
+								</td>
+								<td class="text-center">{{appointment.3}}</td>
+								<td class="text-center">
+									<h2 class="table-avatar">
+										<a href="patient_profile?patient_num={{appointment.4}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/patient/profileImg/{{appointment.6}}" alt="User Image"></a>
+										<a href="patient_profile?patient_num={{appointment.4}}">{{appointment.5}} </a>
+									</h2>
+								</td>
+								<td class="text-center">{{ appointment.8|slice:"0:4" }}년 {{ appointment.8|slice:"5:7" }}월 {{ appointment.8|slice:"8:10" }}일 <span class="text-primary d-block">{{appointment.9}}</span></td>
+								<!--<td>
+									<div class="status-toggle">
+										<input type="checkbox" id="status_1" class="check" checked>
+										<label for="status_1" class="checktoggle">checkbox</label>
+									</div>
+								</td>-->
+								<td class="text-center">
+									<span>{{appointment.10}}</span>
+								</td>
+							</tr>
+							<!-- 리스트 -->
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="blog-pagination">
+						<nav>
+							<ul class="pagination justify-content-center">
+								{% for p in p_num %}
+								<li class="page-item">
+									<a class="page-link" href="appointment_list?p_num={{p}}">{{p}}</a>
+								</li>
+								{% endfor %}
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /Recent Orders -->
+
+	</div>
+</div>
+</div>
+</div>
+<!-- /Page Wrapper -->
+
+</div>
+<!-- /Main Wrapper -->
+{% endblock content %}

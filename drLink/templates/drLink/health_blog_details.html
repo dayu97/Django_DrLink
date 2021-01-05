@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="content container-fluid">
+
+<!-- Page Header -->
+<div class="page-header">
+	<div class="row">
+		<div class="col-sm-12">
+			<h3 class="page-title">게시판 상세</h3>
+			<ul class="breadcrumb">
+				<li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+				<li class="breadcrumb-item"><a href="javascript:(0);">게시판</a></li>
+				<li class="breadcrumb-item active">게시판 상세</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<!-- /Page Header -->
+
+<div class="row">
+	<div class="col-sm-12">
+
+			<!-- Blog Details-->
+			<div class="blog-view">
+			<div class="blog blog-single-post">
+				{% if n_detail.2 != None and n_detail.2 != "" %}
+					<div class="video-wrap">
+						<iframe width="100%" height="315" src="{{n_detail.2}}" frameborder="0"
+						allow="accelerometer; autoplay; clipboard-write;
+						encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+					</div>
+				{% endif %}
+				<div class="blog-image">
+						{% if n_detail.3 != None and n_detail.3 != "" %}
+							<img alt="" src="{{baseUrl}}/img/blog/{{n_detail.3}}" class="img-fluid">
+						{% elif n_detail.2 == None and n_detail.2 == "" or n_detail.3 == None and n_detail.3 == "" %}
+							<img alt="" src="{{baseUrl}}/img/blog/blog-01.jpg" class="img-fluid">
+						{% endif %}
+				</div>
+				<h3 class="blog-title">{{n_detail.4}}</h3>
+				<div class="blog-info clearfix">
+					<div class="post-left">
+						<ul>
+<!--							<li>-->
+<!--								<div class="post-author">-->
+<!--									<a href="doctor-profile"><img src="{{baseUrl}}/img/doctors/doctor-thumb-02.jpg" alt="Post Author"> <span>김성민 의사</span></a>-->
+<!--								</div>-->
+<!--							</li>-->
+							<li><i class="far fa-calendar"></i> 게시일 {{n_detail.6}}</li>
+							<li><i class="fa fa-tags"></i>건강정보</li>
+							<li><i class="far fa-comments"></i>댓글 {{n_detail.0}}</li>
+							<li> 조회수 {{n_detail.7}} </li>
+						</ul>
+					</div>
+				</div>
+				<div class="blog-content">
+					<p>{{n_detail.5|linebreaksbr}}</p>
+				</div>
+			</div>
+
+<!--			<div class="card blog-share clearfix">-->
+<!--				<div class="card-header">-->
+<!--					<h4 class="card-title">게시글 공유하기</h4>-->
+<!--				</div>-->
+<!--				<div class="card-body">-->
+<!--					<ul class="social-share">-->
+<!--						<li><a href="#" title="Facebook"><i class="fab fa-facebook"></i></a></li>-->
+<!--						<li><a href="#" title="Twitter"><i class="fab fa-twitter"></i></a></li>-->
+<!--						<li><a href="#" title="Linkedin"><i class="fab fa-linkedin"></i></a></li>-->
+<!--						<li><a href="#" title="Google Plus"><i class="fab fa-google-plus"></i></a></li>-->
+<!--						<li><a href="#" title="Youtube"><i class="fab fa-youtube"></i></a></li>-->
+<!--					</ul>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--				-->
+<!--			<div class="card author-widget clearfix">-->
+<!--			<div class="card-header">-->
+<!--				<h4 class="card-title">저자 소개</h4>-->
+<!--				</div>-->
+<!--			<div class="card-body">-->
+<!--				<div class="about-author">-->
+<!--					<div class="about-author-img">-->
+<!--						<div class="author-img-wrap">-->
+<!--							<a href="doctor-profile"><img class="img-fluid rounded-circle" alt="" src="{{baseUrl}}/img/doctors/doctor-thumb-02.jpg"></a>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--					<div class="author-details">-->
+<!--						<a href="doctor-profile" class="blog-author-name">김성민 의사</a>-->
+<!--						<p class="mb-0">정신건강의학과 전문의</p>-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			</div>-->
+
+
+			<div class="card blog-comments clearfix">
+				<div class="card-header">
+					<h4 class="card-title"> <i class="fas fa-comments"></i> 댓글 {{n_detail.0}}</h4>
+				</div>
+				<div class="card-body pb-0">
+				{% for repl in n_repl %}
+					{% if repl.7 == None or repl.7 == 0 %}
+				<ul class="comments-list">
+					<li>
+						<div class="comment">
+							<div class="comment-author">
+								<img class="avatar" alt="" src="{{baseUrl}}/img/patients/patient4.jpg">
+							</div>
+							<div class="comment-block">
+								<span class="comment-by">
+									{% if repl.2 == None %}
+									<span class="blog-author-name">{{repl.4}}</span>
+									{% else %}
+									<span class="blog-author-name">{{repl.2}}</span>
+									{% endif %}
+								</span>
+								<p>{{repl.6}}</p>
+								<p class="blog-date">{{repl.1}}</p>
+								<a class="comment-btn" href="delete_repl?repl_num={{repl.0}}&&news_board_num={{n_detail.1}}">
+									<i class="fas fa-reply"></i> 댓글삭제
+								</a>
+							</div>
+						</div>
+
+						<ul class="comments-list reply">
+							{% for rrepl in n_repl %}
+								{% if repl.0 == rrepl.7 %}
+							<li>
+								<div class="comment">
+									<div class="comment-author">
+										<img class="avatar" alt="" src="{{baseUrl}}/img/patients/patient5.jpg">
+									</div>
+									<div class="comment-block">
+										<span class="comment-by">
+											{% if rrepl.2 == None %}
+											<span class="blog-author-name">{{rrepl.4}}</span>
+											{% else %}
+											<span class="blog-author-name">{{rrepl.2}}</span>
+											{% endif %}
+										</span>
+										<p> {{rrepl.6}}</p>
+										<p class="blog-date">{{rrepl.1}}</p>
+										<a class="comment-btn" href="delete_repl?repl_num={{rrepl.0}}&&news_board_num={{n_detail.1}}">
+											<i class="fas fa-reply"></i> 댓글삭제
+										</a>
+									</div>
+								</div>
+							</li>
+							{% endif %}
+						{% endfor %}
+						</ul>
+					</li>
+				</ul>
+				{% endif %}
+			{% endfor %}
+			</div>
+			</div>
+
+
+		</div>
+			<!-- /Blog Details-->
+	</div>
+</div>
+
+</div>
+</div>
+<!-- /Page Wrapper -->
+
+</div>
+<!-- /Main Wrapper -->
+<script src="{{baseUrl}}/js/jquery-3.2.1.min.js"></script>
+<script>
+	$(function(){
+		$('a.comment-btn').click(function(e){
+			if(!(confirm("정말 삭제하시겠습니까?"))) {
+				e.preventDefault()
+			}
+		}) // click
+	}) // ready
+</script>
+
+
+<!-- Model -->
+<!--<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">-->
+<!--<div class="modal-dialog modal-dialog-centered">-->
+<!--<div class="modal-content">-->
+<!--<div class="modal-header">-->
+<!--	<h5 class="modal-title" id="acc_title"></h5>-->
+<!--	<button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--		<span aria-hidden="true">×</span>-->
+<!--	</button>-->
+<!--</div>-->
+<!--<div class="modal-body">-->
+<!--	<p id="acc_msg"></p>-->
+<!--</div>-->
+<!--<div class="modal-footer">-->
+<!--	<a href="javascript:;" class="btn btn-success si_accept_confirm">Yes</a>-->
+<!--	<button type="button" class="btn btn-danger si_accept_cancel" data-dismiss="modal">Cancel</button>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="modal fade" id="deleteNotConfirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">-->
+<!--<div class="modal-dialog modal-dialog-centered">-->
+<!--<div class="modal-content">-->
+<!--<div class="modal-header">-->
+<!--	<h5 class="modal-title" id="acc_title">Inactive Service?</h5>-->
+<!--	<button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--		<span aria-hidden="true">×</span>-->
+<!--	</button>-->
+<!--</div>-->
+<!--<div class="modal-body">-->
+<!--	<p id="acc_msg">Service is Booked and Inprogress..</p>-->
+<!--</div>-->
+<!--<div class="modal-footer">-->
+
+<!--	<button type="button" class="btn btn-danger si_accept_cancel" data-dismiss="modal">OK</button>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!-- /Model -->
+
+{% endblock content %}

@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block content %}
+                <div class="content container-fluid">
+				
+					<!-- Page Header -->
+					<div class="page-header">
+						<div class="row">
+							<div class="col-sm-12">
+								<h3 class="page-title">환자목록</h3>
+								<ul class="breadcrumb">
+									<li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+									<li class="breadcrumb-item"><a href="javascript:(0);">계정관리</a></li>
+									<li class="breadcrumb-item active">환자관리</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<!-- /Page Header -->
+					
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="card">
+								<div class="card-body">
+									<div class="table-responsive">
+										<div class="table-responsive">
+										<table class="datatable table table-hover table-center mb-0">
+											<thead>
+												<tr>
+													<th class="text-center">환자 아이디</th>
+													<th class="text-center">환자 이메일</th>
+													<th class="text-center">환자 이름</th>
+													<th class="text-center">나이</th>
+													<th class="text-center">주소</th>
+													<th class="text-center">연락처</th>
+													<th class="text-center">상태</th>
+												</tr>
+											</thead>
+											<tbody>
+											<!-- 환자 목록 -->
+											{% for patient in patientList %}
+												<tr>
+													<td class="text-center">{{patient.0}}</td>
+													<td class="text-center">{{patient.1}}</td>
+													<td class="text-center">
+														<h2 class="table-avatar">
+															<a href="patient_profile?patient_num={{patient.10}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/patient/profileImg/{{patient.3}}" alt="User Image"></a>
+															<a href="patient_profile?patient_num={{patient.10}}">{{patient.2}} </a>
+														</h2>
+													</td>
+													<td class="text-center">만 {{patient.4}} 세</td>
+														{% if patient.6 %}
+													<td class="text-left">{{patient.5}}, {{patient.6}}</td>
+														{% else %}
+													<td class="text-left">{{patient.5}}</td>
+														{% endif %}
+													<td class="text-center">{{ patient.7|slice:"0:3" }}-{{ patient.7|slice:"3:7" }}-{{ patient.7|slice:"7:11" }}</td>
+													<td class="text-center">
+														{% if patient.8 %}
+														<span class="badge badge-pill bg-danger-light">탈퇴</span>
+														{% else %}
+														<span class="badge badge-pill bg-success-light">정상</span>
+														{% endif %}
+													</td>
+												</tr>
+											<!-- 환자 목록 -->
+											{% endfor %}
+											</tbody>
+										</table>
+									</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="blog-pagination">
+											<nav>
+												<ul class="pagination justify-content-center">
+													{% for p in p_num %}
+													<li class="page-item">
+														<a class="page-link" href="patient_list?p_num={{p}}">{{p}}</a>
+													</li>
+													{% endfor %}
+												</ul>
+											</nav>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>			
+					</div>
+					
+				</div>			
+			</div>
+			<!-- /Page Wrapper -->
+		
+        </div>
+		<!-- /Main Wrapper -->
+{% endblock content %}

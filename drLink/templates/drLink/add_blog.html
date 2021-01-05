@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div class="content container-fluid">
+
+<!-- Page Header -->
+<div class="page-header">
+	<div class="row">
+		<div class="col-sm-12">
+			<h3 class="page-title">게시글 추가</h3>
+			<ul class="breadcrumb">
+				<li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+				<li class="breadcrumb-item"><a href="javascript:(0);">페이지</a></li>
+				<li class="breadcrumb-item active">게시글 추가</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<!-- /Page Header -->
+
+<div class="row">
+	<div class="col-sm-12">
+		<div class="card">
+			<div class="card-body custom-edit-service">
+
+				<!--<div class="row mb-5">
+				 <div class="col">
+					<ul class="nav nav-tabs nav-tabs-solid">
+						<li class="nav-item">
+							<a class="nav-link" href="blog">공지사항/병원소식</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="pending-blog">건강정보</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="blog">자주하는질문</a>
+						</li>
+					</ul>
+				</div>
+				<div class="col-auto">
+					<a class="btn btn-primary btn-sm" href="add-blog"><i class="fas fa-plus mr-1"></i>게시글 추가</a>
+				</div>
+			</div>-->
+
+			<!-- Add Blog -->
+
+			<form method="post" enctype="multipart/form-data" autocomplete="off" id="add_board" action="">
+				{% csrf_token %}
+				<input type="hidden" name="csrf_token_name" value="0146f123a4c7ae94253b39bca6bd5a5e">
+
+				<div class="service-fields mb-3">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label>제목 <span class="text-danger">*</span></label>
+								<input type="hidden" name="service_id" id="service_id" value="18">
+								<input class="form-control" type="text" name="title" id="제목을 입력하세요" required="">
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="service-fields mb-3">
+					<div class="row">
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label>카테고리 선택<span class="text-danger">*</span></label>
+								<select class="form-control" id="category" class="category" required="">
+									<option value="1">공지사항</option>
+									<option value="2" selected="selected">건강정보</option>
+								</select>
+							</div>
+						</div>
+						<!--
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label>분야 선택 <span class="text-danger">*</span></label>
+								<select class="form-control" name="subcategory">
+									<option value="5">공지사항</option>
+									<option value="6">병원소식</option>
+									<option value="7">피부과</option>
+									<option value="8">안과</option>
+									<option value="9">정신건강의학과</option>
+									<option value="10">원무관련</option>
+									<option value="11">진료관련</option>
+									<option value="12">홈페이지 이용</option>
+									<option value="13">Full Car Wash</option>
+									<option value="14" selected="selected">Testing category</option>
+									<option value="15">Test Sub category</option>
+									<option value="16">Harvesting pine</option>
+									<option value="17">Test Sub category name</option>
+									<option value="18">Test Sub category name</option>
+								</select>
+							</div>
+						</div>
+						-->
+					</div>
+				</div>
+
+				<div class="service-fields mb-3">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label>내용 <span class="text-danger">*</span></label>
+								<textarea id="content" class="form-control service-desc" name="content"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="service-fields mb-3 video-url">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label>영상 Url <span class="text-danger">*</span></label>
+								<input type="text" id="url" class="form-control service-desc" name="url" placeholder="링크만 입력해주세요  예) https://youtu.be/ChK7zE3gECc"></input>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="service-fields mb-3 photo-upload">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="service-upload">
+								<i class="fas fa-cloud-upload-alt"></i>
+								<span>이미지 첨부 *</span>
+<!--								<input type="file" name="images[]" id="images" multiple="" accept="image/jpeg, image/png, image/gif,">-->
+								 <td><input type="file" name="board_img" id="board_img"></td>
+								 <div>
+									 <img src="" id="targetImg" style="width:300px">
+								 </div>
+
+							</div>
+
+<!--							<div id="uploadPreview">-->
+<!--								<ul class="upload-wrap">-->
+<!--									<li>-->
+<!--										<div class=" upload-images">-->
+<!--											<img alt="Blog Image" src="{{baseUrl}}/img/profiles/avatar-17.jpg">-->
+<!--										</div>-->
+<!--									</li>-->
+<!--									<li>-->
+<!--										<div class=" upload-images">-->
+<!--											<img alt="Blog Image" src="{{baseUrl}}/img/profiles/avatar-17.jpg">-->
+<!--										</div>-->
+<!--									</li>-->
+<!--									<li>-->
+<!--										<div class=" upload-images">-->
+<!--											<img alt="Blog Image" src="{{baseUrl}}/img/profiles/avatar-17.jpg">-->
+<!--										</div>-->
+<!--									</li>-->
+<!--								</ul>-->
+<!--							</div>-->
+
+						</div>
+					</div>
+				</div>
+
+				<div class="service-fields mb-3">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label>비밀번호 <span class="text-danger">*</span></label>
+								<input class="form-control" type="password" name="video_id" id="video_id" value="*****" required="">
+								<input type="text" id="target" readonly>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="submit-section">
+					<button class="btn btn-primary submit-btn" type="submit" name="form_submit" value="submit">저장</button>
+				</div>
+			</form>
+			<!-- /Add Blog -->
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+</div>
+</div>
+<!-- /Page Wrapper -->
+
+</div>
+<!-- /Main Wrapper -->
+
+<!-- Model -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content">
+<div class="modal-header">
+	<h5 class="modal-title" id="acc_title"></h5>
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		<span aria-hidden="true">�</span>
+	</button>
+</div>
+<div class="modal-body">
+	<p id="acc_msg"></p>
+</div>
+<div class="modal-footer">
+	<a href="javascript:;" class="btn btn-success si_accept_confirm">Yes</a>
+	<button type="button" class="btn btn-danger si_accept_cancel" data-dismiss="modal">Cancel</button>
+</div>
+</div>
+</div>
+</div>
+<div class="modal fade" id="deleteNotConfirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content">
+<div class="modal-header">
+	<h5 class="modal-title" id="acc_title">Inactive Service?</h5>
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		<span aria-hidden="true">�</span>
+	</button>
+</div>
+<div class="modal-body">
+	<p id="acc_msg">Service is Booked and Inprogress..</p>
+</div>
+<div class="modal-footer">
+
+	<button type="button" class="btn btn-danger si_accept_cancel" data-dismiss="modal">OK</button>
+</div>
+</div>
+</div>
+</div>
+<!-- /Model -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{{baseUrl}}/js/jquery-3.2.1.min.js"></script>
+ <script src="http://code.jquery.com/jquery-latest.js"></script>
+<script>
+	 // using jQuery
+	  function getCookie(name) {
+		var cookieValue = null;
+		if (document.cookie && document.cookie != '') {
+		  var cookies = document.cookie.split(';');
+		  for (var i = 0; i < cookies.length; i++) {
+			var cookie = jQuery.trim(cookies[i]);
+			// Does this cookie string begin with the name we want?
+			if (cookie.substring(0, name.length + 1) == (name + '=')) {
+			  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+			  break;
+			}
+		  }
+		}
+		return cookieValue;
+	  }
+	  function csrfSafeMethod(method) {
+		// these HTTP methods do not require CSRF protection
+		return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+	  }
+	  $(document).ready(function() {
+		var csrftoken = getCookie('csrftoken');
+		$.ajaxSetup({
+		  beforeSend: function(xhr, settings) {
+			if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+			  xhr.setRequestHeader("X-CSRFToken", csrftoken);
+			}
+		  }
+		});
+	  });
+</script>
+
+<script type="text/javascript">
+
+	//$('.video-url').css({'display': 'none'})
+	$('#category').change(function(){
+		if($('#category').val() == 2) {
+			$('.video-url').css({'display': 'block'})
+		} else if ($('#category').val() == 3) {
+			$('.photo-upload').css({'display':'none'})
+			$('.video-url').css({'display': 'none'})
+		} else {
+			$('.photo-upload').css({'display':'block'})
+			$('.video-url').css({'display': 'none'})
+		}
+	}) // change
+
+	$('.submit-btn').click(function(e){
+		var category = $('#category').val();
+		alert("cc"+category)
+		e.preventDefault()
+		if(category == 1) $('#add_board').attr('action', "insert_notice_board").submit();
+		else if(category == 2) $('#add_board').attr('action', "insert_health_board").submit();
+		else $('#add_board').attr('action', "insert_faq_board").submit();
+	}); // 클릭 함수
+
+	// html5 파일 기능
+	$('#board_img').change(function(){
+		// 업로드 파일 읽기
+		let fileInfo = document.getElementById("board_img").files[0];
+		console.log(fileInfo)
+		let reader = new FileReader();
+		// readAsDateURL()을 통해 파일을 읽어 들일때 onload가 실행
+		reader.onload = function() {
+			document.getElementById("targetImg").src = reader.result;
+		};
+		if( fileInfo ) {
+			// readAsDataURL()을 통해 파일의 URL을 읽어온다.
+			reader.readAsDataURL( fileInfo );
+		};
+	}); // change 함수
+
+	$('#video_id').keyup(function(){
+		$.ajax({
+			url :'pw_chk',
+			type:'POST',
+			data: {"chk_pwd": $("#video_id").val()},
+			dataType:'json',
+			success : function(response){
+				if(response['result'] != 'success') {
+					console.error(response.data)
+					return;
+				}
+				if( response['data'] == 'exist' ) {
+					$('#target').val("등록한 비밀번호와 같습니다.")
+				}else{
+					$('#target').text("등록한 비밀번호와 같지 않습니다.")
+				}
+			},
+			error : function(error){
+				console.log(error)
+			}
+			}) // ajax 함수
+	}) // click 함수
+
+</script>
+
+{% endblock content %}

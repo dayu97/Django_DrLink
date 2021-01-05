@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block content %}
+                <div class="content container-fluid">
+				
+					<!-- Page Header -->
+					<div class="page-header">
+						<div class="row">
+							<div class="col-sm-12">
+								<h3 class="page-title">게시판 관리</h3>
+								<ul class="breadcrumb">
+									<li class="breadcrumb-item"><a href="index">Dashboard</a></li>
+									<li class="breadcrumb-item"><a href="javascript:(0);">게시판</a></li>
+									<li class="breadcrumb-item active">게시판 관리</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<!-- /Page Header -->
+
+					<div class="row">
+						<div class="col-sm-12">
+									
+								<div class="row mb-5">
+                                    <div class="col">
+                                        <ul class="nav nav-tabs nav-tabs-solid">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" href="notice">공지사항/병원소식</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="health_info">건강정보</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-auto">
+                                        <a class="btn btn-primary btn-sm" href="add_blog"><i class="fas fa-plus mr-1"></i> 게시글 추가</a>
+                                    </div>
+                                </div>
+
+<!--							hospital_board_num number(4) CONSTRAINT hospital_num_pk primary key,-->
+<!--							hospital_photo varchar2(60),-->
+<!--							hospital_title varchar2(100),-->
+<!--							hospital_content varchar2(500),-->
+<!--							hospital_regdate date default sysdate,-->
+<!--							h_watched number(4)-->
+<!--								쓸 부분					-->
+								<!-- Blog -->
+								<div class="row blog-grid-row">
+									{% for h in h_List %}
+									<div class="col-md-6 col-xl-4 col-sm-12">
+										<!-- Blog Post -->
+										<div class="blog grid-blog" style="height:550px;">
+											<div class="blog-image">									<!-- 사진은 수정 예정 -->
+												{% if h.1 == None or h.1 == "" %}
+												<a href="notice_details?h_num={{h.0}}"><img class="img-fluid" src="{{baseUrl}}/img/blog/blog-01.jpg" alt="Post Image" style="height:250px;"></a>
+												{% else %}
+												<a href="notice_details?h_num={{h.0}}"><img class="img-fluid" src="{{baseUrl}}/img/{{h.1}}" alt="Post Image" style="height:250px;"></a>
+												{% endif %}
+											</div>
+											<div class="blog-content">
+												<ul class="entry-meta meta-item">
+													<li style="list-style: none;">
+														<div class="post-author" style="width:100px;">
+															<i class="fa fa-eye" aria-hidden="true"></i> 조회수 {{h.5}}</a>
+														</div>
+													</li>
+													<li>
+														<i class="fas fa-clock"></i> 게시일 {{h.4}}</li>
+												</ul>
+												<h3 class="blog-title" style="padding-top:10px;"><a href="notice_details?h_num={{h.0}}">{{h.2}}</a></h3>
+																	<!-- 사진은 수정 예정 -->
+												{% if h.3 == None or h.3 == "" %}
+												<p class="mb-0">이미지 첨부</p>
+												{% else %}
+												<p class="mb-0">{{h.3|truncatewords:15}}</p>
+												{% endif %}
+											</div>
+											<div class="row pt-3">
+												<div class="col"><a href="edit_notice_board?h_num={{h.0}}" class="text-success"><i class="fas fa-edit"></i> 수정</a></div>
+												<div class="col text-right"><a href="delete_notice_board?h_num{{h.0}}" class="text-danger" >
+													<i class="fas fa-trash-alt"></i> 삭제</a></div>
+											</div>
+										</div>
+										<!-- /Blog Post -->
+									</div>
+									{% endfor %}
+								</div>
+							
+								<!-- Blog Pagination -->
+								<div class="row">
+									<div class="col-md-12">
+										<div class="blog-pagination">
+											<nav>
+												<ul class="pagination justify-content-center">
+													<li class="page-item disabled">
+														<a class="minus-page-link" href="#" tabindex="-1"><i class="fas fa-angle-double-left"></i></a>
+													</li>
+													{% for p in p_num %}
+													<li class="page-item">
+														<a class="page-link" href="notice?p_num={{p}}">{{p}}</a>
+													</li>
+													{% endfor %}
+													<li class="page-item">
+														<a class="plus-page-link" href="#"><i class="fas fa-angle-double-right"></i></a>
+													</li>
+												</ul>
+											</nav>
+										</div>
+									</div>
+								</div>
+								<!-- /Blog Pagination -->
+								<!-- /Blog -->
+						</div>			
+					</div>
+					
+				</div>			
+			</div>
+			<!-- /Page Wrapper -->
+		
+        </div>
+		<!-- /Main Wrapper -->
+
+		<!-- Model -->
+<!--		<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">-->
+<!--			<div class="modal-dialog modal-dialog-centered">-->
+<!--				<div class="modal-content">-->
+<!--					<div class="modal-header">-->
+<!--						<h5 class="modal-title" id="acc_title"></h5>-->
+<!--						<button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--							<span aria-hidden="true">×</span>-->
+<!--						</button>-->
+<!--					</div>-->
+<!--					<div class="modal-body">-->
+<!--						<p id="acc_msg"></p>-->
+<!--					</div>-->
+<!--					<div class="modal-footer">-->
+<!--						<a href="javascript:;" class="btn btn-success si_accept_confirm">Yes</a>-->
+<!--						<button type="button" class="btn btn-danger si_accept_cancel" data-dismiss="modal">Cancel</button>-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--		</div>-->
+		<!-- /Model -->
+		<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="acc_title"></h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p id="acc_msg"></p>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:;" class="btn btn-success si_accept_confirm">Yes</a>
+						<button type="button" class="btn btn-danger si_accept_cancel" data-dismiss="modal">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+<script src="{{baseUrl}}/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$('a.text-danger').click(function(){
+			var h_num = $(this).parents('div.pt-3').find('a.text-success').attr('href').split('=')[1]
+			if(confirm("게시글을 삭제하시겠습니까 ?")) {
+				$(this).attr('href', 'delete_notice_board?h_num='+h_num)
+			}
+		}) // click
+	}) // ready
+</script>
+
+{% endblock content %}
