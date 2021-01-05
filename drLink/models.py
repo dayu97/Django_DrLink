@@ -27,6 +27,24 @@ def getSumPrice() :
     print(re)
     return re
 
+def getPriceChart():
+    conn = ora.connect(database)
+    cursor = conn.cursor()
+    sql = "SELECT TO_CHAR (SYSDATE + 1, 'fmiw')"\
+   " ,nvl((select sum(price) from payment_record where TO_CHAR(paydate,'yy-mm-dd') = TO_CHAR(A.S_DATA    , 'yy-mm-dd')), 0) "\
+   " ,nvl((select sum(price) from payment_record where TO_CHAR(paydate,'yy-mm-dd') = TO_CHAR(A.S_DATA +1 , 'yy-mm-dd') ), 0) "\
+   " ,nvl((select sum(price) from payment_record where TO_CHAR(paydate,'yy-mm-dd') = TO_CHAR(A.S_DATA +2 , 'yy-mm-dd') ), 0) "\
+   " ,nvl((select sum(price) from payment_record where TO_CHAR(paydate,'yy-mm-dd') = TO_CHAR(A.S_DATA +3 , 'yy-mm-dd') ), 0) "\
+   " ,nvl((select sum(price) from payment_record where TO_CHAR(paydate,'yy-mm-dd') = TO_CHAR(A.S_DATA +4 , 'yy-mm-dd') ), 0) "\
+   " FROM (SELECT SYSDATE - (TO_NUMBER(TO_CHAR(SYSDATE, 'd')) - 2) S_DATA FROM DUAL) A"
+    print("sql: ", sql)
+    cursor.execute(sql)
+    re = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    print("re:: ",re)
+    return re
+
 def getGender():
     conn = ora.connect(database)
     cursor = conn.cursor()
@@ -54,7 +72,9 @@ def getPatientCount() :
 def getNewChart():
     conn = ora.connect(database)
     cursor = conn.cursor()
-    sql="select (select count(*) from dl_doctor d where d.d_regdate >= sysdate-1 ),(select count(*) from dl_user u where u.p_regdate >= sysdate-1 ), (select count(*) from appointment a where a.reg_date >= sysdate-1 ) from dual"
+    sql="select nvl((select count(*) from dl_doctor d where d.d_regdate >= sysdate-1 ),0),"\
+        " nvl((select count(*) from dl_user u where u.p_regdate >= sysdate-1 ),0), "\
+        " nvl((select count(*) from appointment a where a.reg_date >= sysdate-1 ),0) from dual"
     cursor.execute(sql)
     re = cursor.fetchone()
     cursor.close()
@@ -239,7 +259,7 @@ def deleteReviewSave(review_num):
 def getTransactionsList():
     conn = ora.connect(database)
     cursor = conn.cursor()
-    sql = "select a.*, b.*, c.*, d.*, e.*, to_char(prescription_date,'YYYY-MM-DD'), to_char(paydate,'YYYY-MM-DD') from prescription a, payment_record b, dl_user c, dl_doctor d, department e where b.prescription_num(+)=a.prescription_num and a.patient_num=c.patient_num and a.doctor_num=d.doctor_num and d.dep_num=e.dep_num"
+    sql = "select a.*, b.*, c.*, d.*, e.*, to_char(prescription_date,'YYYY-MM-DD'), to_char(paydate,'YYYY-MM-DD') from prescription a, payment_record b, dl_user c, dl_doctor d, department e where b.prescription_num(+)=a.prescription_num and a.patient_num=c.patient_num and a.doctor_num=d.doctor_num and d.dep_num=e.dep_num order by prescription_date desc "
     cursor.execute(sql)
     re = cursor.fetchall()
     cursor.close()

@@ -36,28 +36,47 @@ $(function(){
 		}
 	});
 
-	var linedata =[]; <!--금액 담겨 있음-->
-	var linex=[] <!--날짜 담겨 있음-->
-
-	var len = $('input[name=line]').length;
-
+	var linedata =[];
+	var len = $('input[name=week]').length;
 	for(var i = 0 ; i<len ; i++){
-		linedata.push([$('input[name=line_val]').eq(i).val()]);
+		linedata.push([$('input[name=week]').eq(i).val(),$('input[name=mon]').eq(i).val(),$('input[name=tue]').eq(i).val(),$('input[name=wed]').eq(i).val(),$('input[name=thu]').eq(i).val(),$('input[name=fri]').eq(i).val()]);
 	}
-	for(var i = 0 ; i<len ; i++){
-		linex.push([$('input[name=line]').eq(i).val()]);
-	}
-
-	var test = '{{sum_price}}'
-
+	console.log(linedata)
 	var lineChart = c3.generate({
 		bindto: '#linechart',
 		data: {
-			columns: linedata
+			columns:
+            linedata
+       	},
+		axis: {
+			x: {
+				type: 'category',
+				categories: ['월요일', '화요일', '수요일', '목요일', '금요일']
+			},
+			y : {
+				tick: {
+					format: function (d) { return "￦" + d; }
+				}
+			}
 		},
-    color: {
-        pattern: ['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
-    }
+		color: {
+			pattern: [ '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
+		},
+		grid: {
+			x: {
+				show: true
+			},
+			y: {
+				show: true
+			}
+		},
+		tooltip: {
+			format: {
+				value: function(value) {
+					return d3.format(",")(value)
+				}
+			}
+		}
 	});
 
 	var chartData=[];
@@ -72,7 +91,7 @@ $(function(){
 			type : 'pie',
 		},
     color: {
-        pattern: ['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
+        pattern: ['#1f77b4', '#aec7e8', '#ff7f0e', '#2ca02c', '#9467bd', '#d62728',  '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
     }
 	});//차트함수
 
@@ -128,9 +147,13 @@ $(function(){
 		</div>
 	</div>
 
-	{% for line,line_val in sum_price%}
-	<input type="hidden" name="line" class="line" value="{{line}}">
-	<input type="hidden" name="line_val" class="line_val" value="{{line_val}}">
+	{% for week,mon,tue,wed,thu,fri in priceChart%}
+	<input type="hidden" name="week" class="week" value="금주 일별 수익">
+	<input type="hidden" name="mon" class="mon" value="{{mon}}">
+	<input type="hidden" name="tue" class="tue" value="{{tue}}">
+	<input type="hidden" name="wed" class="wed" value="{{wed}}">
+	<input type="hidden" name="thu" class="thu" value="{{thu}}">
+	<input type="hidden" name="fri" class="fri" value="{{fri}}">
 	{% endfor %}
 	{% for p_age,p_count in patient_count%}
 	<input type="hidden" name="p_age" class="p_age" value="{{p_age}}">
