@@ -26,28 +26,28 @@
 			<div class="blog-view">
 			<div class="blog blog-single-post">
 
-				<h3 class="blog-title">{{h_detail.2}}</h3>
+				<h3 class="blog-title">{{h_detail.3}}</h3>
 				<div class="blog-info clearfix">
 					<div class="post-left">
 						<ul>
-							<li><i class="far fa-calendar"></i> 게시일 {{h_detail.4}}</li>
-							<li><i class="fa fa-eye" aria-hidden="true"></i> 조회수 {{h_detail.5}}</li>
+							<li><i class="far fa-calendar"></i> 게시일 {{h_detail.7}}</li>
+							<li><i class="fa fa-eye" aria-hidden="true"></i> 조회수 {{h_detail.6}}</li>
 							<li><i class="fa fa-tags"></i> 공지사항</li>
 						</ul>
 					</div>
 				</div>
 				<div class="blog-content">
-					{% if h_detail.1 == None or h_detail.1 == "" %}
+					{% if h_detail.2 == None or h_detail.2 == "" %}
 					{% else %}
 					<div class="blog-image">
-						<img alt="" src="{{baseUrl}}/img/{{h_detail.1}}" class="img-fluid" style="width : 50%;margin: auto;">
+						<img alt="" src="{{baseUrl}}/img/{{h_detail.2}}" class="img-fluid" style="width : 50%;margin: auto;">
 					</div>
 					{% endif %}
 
-					{% if h_detail.3 == None or h_detail.3 == "" %}
+					{% if h_detail.4 == None or h_detail.4 == "" %}
 					<p class="mb-1">이미지 첨부</p>
 					{% else %}
-					<p class="mb-1">{{h_detail.3|linebreaksbr}}</p>
+					<p class="mb-1">{{h_detail.4|linebreaksbr}}</p>
 					{% endif %}
 <!--					<p>건강 건강 건강, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>-->
 <!--					<p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>-->

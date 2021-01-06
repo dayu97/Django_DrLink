@@ -67,8 +67,13 @@
 							<div class="form-group">
 								<label>카테고리 선택<span class="text-danger">*</span></label>
 								<select class="form-control" id="category" class="category" required="">
+									{% if category == 'notice' %}
+									<option value="1" selected="selected">공지사항</option>
+									<option value="2" >건강정보</option>
+									{% else %}
 									<option value="1">공지사항</option>
 									<option value="2" selected="selected">건강정보</option>
+									{% endif %}
 								</select>
 							</div>
 						</div>
@@ -108,7 +113,6 @@
 						</div>
 					</div>
 				</div>
-
 				<div class="service-fields mb-3 video-url">
 					<div class="row">
 						<div class="col-lg-12">
@@ -277,7 +281,6 @@
 
 	$('.submit-btn').click(function(e){
 		var category = $('#category').val();
-		alert("cc"+category)
 		e.preventDefault()
 		if(category == 1) $('#add_board').attr('action', "insert_notice_board").submit();
 		else if(category == 2) $('#add_board').attr('action', "insert_health_board").submit();

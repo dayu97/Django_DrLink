@@ -9,7 +9,7 @@
 								<h3 class="page-title">게시판 관리</h3>
 								<ul class="breadcrumb">
 									<li class="breadcrumb-item"><a href="index">Dashboard</a></li>
-									<li class="breadcrumb-item"><a href="javascript:(0);">게시판</a></li>
+									<li class="breadcrumb-item">게시판</li>
 									<li class="breadcrumb-item active">게시판 관리</li>
 								</ul>
 							</div>
@@ -32,7 +32,7 @@
                                         </ul>
                                     </div>
                                     <div class="col-auto">
-                                        <a class="btn btn-primary btn-sm" href="add_blog"><i class="fas fa-plus mr-1"></i> 게시글 추가</a>
+                                        <a class="btn btn-primary btn-sm" href="add_blog?category=notice"><i class="fas fa-plus mr-1"></i> 게시글 추가</a>
                                     </div>
                                 </div>
 
@@ -64,7 +64,7 @@
 														</div>
 													</li>
 													<li>
-														<i class="fas fa-clock"></i> 게시일 {{h.4}}</li>
+														<i class="fas fa-clock"></i> 게시일 {{h.8}}</li>
 												</ul>
 												<h3 class="blog-title" style="padding-top:10px;"><a href="notice_details?h_num={{h.0}}">{{h.2}}</a></h3>
 																	<!-- 사진은 수정 예정 -->
@@ -91,17 +91,11 @@
 										<div class="blog-pagination">
 											<nav>
 												<ul class="pagination justify-content-center">
-													<li class="page-item disabled">
-														<a class="minus-page-link" href="#" tabindex="-1"><i class="fas fa-angle-double-left"></i></a>
-													</li>
 													{% for p in p_num %}
 													<li class="page-item">
 														<a class="page-link" href="notice?p_num={{p}}">{{p}}</a>
 													</li>
 													{% endfor %}
-													<li class="page-item">
-														<a class="plus-page-link" href="#"><i class="fas fa-angle-double-right"></i></a>
-													</li>
 												</ul>
 											</nav>
 										</div>

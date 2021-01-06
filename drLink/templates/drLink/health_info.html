@@ -9,7 +9,7 @@
 								<h3 class="page-title">게시판 관리</h3>
 								<ul class="breadcrumb">
 									<li class="breadcrumb-item"><a href="index">Dashboard</a></li>
-									<li class="breadcrumb-item"><a href="javascript:(0);">게시판</a></li>
+									<li class="breadcrumb-item">게시판</li>
 									<li class="breadcrumb-item active">게시판 관리</li>
 								</ul>
 							</div>
@@ -32,7 +32,7 @@
                                         </ul>
                                     </div>
                                     <div class="col-auto">
-                                        <a class="btn btn-primary btn-sm" href="add_blog"><i class="fas fa-plus mr-1"></i> 게시글 추가</a>
+                                        <a class="btn btn-primary btn-sm" href="add_blog?category=health_info"><i class="fas fa-plus mr-1"></i> 게시글 추가</a>
                                     </div>
                                 </div>
 							
@@ -42,28 +42,24 @@
 									{% for n in n_boardList %}
 									<div class="col-md-6 col-xl-4 col-sm-12">
 										<div class="blog grid-blog" style="height:550px;">
-											{% if n.1 != None and n.1 != '' %}
 											<div class="blog-image">
+												{% if n.1 != None and n.1 != '' %}
 												<div class="video-wrap" style="height:250px;">
 													<iframe width="100%" height="315" src="{{n.1}}" frameborder="0"
 													allow="accelerometer; autoplay; clipboard-write;
 													encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 												</div>
+												{% elif n.2 != None and n.2 != "" %}
+												<a href="health_blog_detail?h_num={{n.0}}"><img class="img-fluid" src="{{baseUrl}}/img/blog/{{n.2}}" alt="Post Image" style="height:250px;"></a>
+												{% else %}
+												<a href="health_blog_detail?h_num={{n.0}}"><img class="img-fluid" src="{{baseUrl}}/img/blog/blog-01.jpg" alt="Post Image" style="height:250px;"></a>
+												{% endif %}
 											</div>
-											{% elif n.3 != None and n.3 != "" %}
-											<div class="blog-image" style="height:250px;">
-												<a href="#"><img class="img-fluid" src="{{baseUrl}}/img/blog/{{n.2}}" alt="Post Image"></a>
-											</div>
-											{% else %}
-											<div class="blog-image" style="height:250px;">
-												<a href="#"><img class="img-fluid" src="{{baseUrl}}/img/blog/blog-01.jpg" alt="Post Image"></a>
-											</div>
-											{% endif %}
 											<div class="blog-content">
 												<ul class="entry-meta meta-item" >
 													<li>
 														<div class="post-author">
-															<i class="fas fa-clock"></i> 게시일 {{n.5}}
+															<i class="fas fa-clock"></i> 게시일 {{n.9}}
 														</div>
 													</li>
 												</ul>
@@ -75,7 +71,7 @@
 												<h3 class="blog-title" style="padding-top:10px;"><a href="health_blog_details?n_num={{n.0}}">{{n.3}}</a></h3>
 												<p class="" style="height:50px">{{n.4|truncatewords:15}}</p>
 											</div>
-											<div class="row pt-4">
+											<div class="row pt-4 deleteAndEdit">
 												<div class="col"><a href="edit_health_board?n_num={{n.0}}" class="text-success"><i class="fas fa-edit"></i> 수정</a></div>
 												<div class="col text-right">
 												<a href="" class="text-danger" >
@@ -346,17 +342,11 @@
 										<div class="blog-pagination">
 											<nav>
 												<ul class="pagination justify-content-center">
-													<li class="page-item disabled">
-														<a class="minus-page-link" href="#" tabindex="-1"><i class="fas fa-angle-double-left"></i></a>
-													</li>
 													{% for p in p_num %}
 													<li class="page-item">
 														<a class="page-link" href="health_info?p_num={{p}}">{{p}}</a>
 													</li>
 													{% endfor %}
-													<li class="page-item">
-														<a class="plus-page-link" href="#"><i class="fas fa-angle-double-right"></i></a>
-													</li>
 <!--													$('.minus-page-link').click(function(){})-->
 <!--													$('.plus-page-link').click(function(){})-->
 												</ul>
@@ -401,7 +391,7 @@
 <script type="text/javascript">
 	$(function(){
 		$('a.text-danger').click(function(){
-			var n_num = $(this).parents('div.pt-3').find('a.text-success').attr('href').split('=')[1]
+			var n_num = $(this).parents('div.deleteAndEdit').find('a.text-success').attr('href').split('=')[1]
 			alert("n_num= "+n_num)
 			if(confirm("게시글을 삭제하시겠습니까 ?")) {
 				$(this).attr('href', 'delete_health_board?n_num='+n_num)

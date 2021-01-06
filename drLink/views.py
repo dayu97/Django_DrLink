@@ -287,7 +287,7 @@ def notice_details(request):
         return redirect("/drLink")
     h_num = request.GET['h_num']
     h_detail = getH_board_details(h_num)
-
+    print(h_detail)
     return render(request, "drLink/notice_details.html", {'h_detail':h_detail})
 
 def delete_notice_board(request):
@@ -479,7 +479,8 @@ def pw_chk(request):
 def add_blog(request):
     if 'id' not in request.session: #로그인 필터
         return redirect("/drLink")
-    return render(request, "drLink/add_blog.html")
+    category = request.GET['category']
+    return render(request, "drLink/add_blog.html",{'category':category})
 
 def question(request):
     return render(request, "drLink/question.html")

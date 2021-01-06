@@ -4,6 +4,7 @@ import cx_Oracle as ora
 #database = 'final_dr/test00@192.168.0.44:1522/orcl1'
 # database = 'drLink/123@123.214.63.87:1521/orcl'
 database = 'drlink/drlink00@192.168.0.52/orcl'
+#database = 'test/test@192.168.0.52/orcl'
 # Create your models here.
 
 def LoginCheck(id, pwd):
@@ -327,10 +328,10 @@ def getH_boardList(p_num, number_page):
     cursor = conn.cursor()
     p_num = int(p_num)
     if p_num == 1:
-        sql_select = "select hh.*, (select count(*) from hospital_board) cnt from ( select h.*, rownum r_num from (select * from hospital_board order by hospital_board_num) h ) hh where r_num between 1 and 6"
+        sql_select = "select hh.*, (select count(*) from hospital_board) cnt,to_char(hospital_regdate,'yyyy-mm-dd') from ( select h.*, rownum r_num from (select * from hospital_board order by hospital_board_num) h ) hh where r_num between 1 and 6"
     else:
         start, end = p_num * number_page - 5, p_num * number_page
-        sql_select = "select hh.*, (select count(*) from hospital_board) cnt from ( select h.*, rownum r_num from (select * from hospital_board order by hospital_board_num) h ) " \
+        sql_select = "select hh.*, (select count(*) from hospital_board) cnt,to_char(hospital_regdate,'yyyy-mm-dd') from ( select h.*, rownum r_num from (select * from hospital_board order by hospital_board_num) h ) " \
                      "hh where r_num between {} and {}".format(start, end)
     try:
         cursor.execute(sql_select)
@@ -346,7 +347,7 @@ def getH_boardList(p_num, number_page):
 def getH_board_details(b_num):
     conn = ora.connect(database)
     cursor = conn.cursor()
-    sql = "select * from hospital_board where hospital_board_num=:b_num"
+    sql = "select ( select count(*) from hospital_board where hospital_board_num=:b_num ) cnt, n.*, to_char(hospital_regdate,'yyyy-mm-dd') from hospital_board n where hospital_board_num=:b_num"
     try:
         cursor.execute(sql, b_num=b_num)
         result = cursor.fetchone()
@@ -362,10 +363,10 @@ def getN_boardList(p_num, number_page):
     cursor = conn.cursor()
     p_num = int(p_num)
     if p_num == 1:
-        sql_select = "select nn.*, (select count(*) from news_board) cnt from ( select n.*, rownum r_num from (select * from news_board order by news_board_num) n ) nn where r_num between 1 and 6"
+        sql_select = "select nn.*, (select count(*) from news_board) cnt,to_char(news_regdate,'yyyy-mm-dd') from ( select n.*, rownum r_num from (select * from news_board order by news_board_num) n ) nn where r_num between 1 and 6"
     else:
         start, end = p_num*number_page-5, p_num * number_page
-        sql_select = "select nn.*, (select count(*) from news_board) cnt from ( select n.*, rownum r_num from (select * from news_board order by news_board_num) n ) " \
+        sql_select = "select nn.*, (select count(*) from news_board) cnt,to_char(news_regdate,'yyyy-mm-dd') from ( select n.*, rownum r_num from (select * from news_board order by news_board_num) n ) " \
                 "nn where r_num between {} and {}".format(start, end)
     try:
         cursor.execute(sql_select)
@@ -400,7 +401,7 @@ def delete_noticeBoard(h_num):
 def getN_board_details(n_num):
     conn = ora.connect(database)
     cursor = conn.cursor()
-    sql = "select ( select count(*) from news_repl where news_board_num=:n_num ) cnt, n.* \
+    sql = "select ( select count(*) from news_repl where news_board_num=:n_num ) cnt, n.*, to_char(news_regdate,'yyyy-mm-dd') \
            from news_board n where news_board_num=:n_num"
     try:
         cursor.execute(sql, n_num=n_num)
