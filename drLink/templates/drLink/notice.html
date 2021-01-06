@@ -69,12 +69,12 @@
 												<h3 class="blog-title" style="padding-top:10px;"><a href="notice_details?h_num={{h.0}}">{{h.2}}</a></h3>
 																	<!-- 사진은 수정 예정 -->
 												{% if h.3 == None or h.3 == "" %}
-												<p class="mb-0">이미지 첨부</p>
+												<p class="" style="height:50px">이미지 첨부</p>
 												{% else %}
-												<p class="mb-0">{{h.3|truncatewords:15}}</p>
+												<p class="" style="height:50px">{{h.3|truncatewords:15}}</p>
 												{% endif %}
 											</div>
-											<div class="row pt-3">
+											<div class="row pt-4">
 												<div class="col"><a href="edit_notice_board?h_num={{h.0}}" class="text-success"><i class="fas fa-edit"></i> 수정</a></div>
 												<div class="col text-right"><a href="delete_notice_board?h_num{{h.0}}" class="text-danger" >
 													<i class="fas fa-trash-alt"></i> 삭제</a></div>

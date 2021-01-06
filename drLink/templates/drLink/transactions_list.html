@@ -51,35 +51,30 @@
 												<!-- 결제내역 리스트 -->
 											{% for transaction in transactionList %}
 												<tr>
-													{% if transaction.4.strip == '1' %}
-														<td class="text-center"><a href="invoice">#IN0<span>{{transaction.0}}</span></a></td>
-													{% else %}
-														<td class="text-center"><a>#IN0<span>{{transaction.0}}</span></a></td>
-													{% endif %}
-
-													<td class="text-center">{{transaction.22}}</td>
+													<td class="text-center"><a>#IN0<span>{{transaction.0}}</span></a></td>
+													<td class="text-center">{{transaction.2}}</td>
 													<td class="text-center">
 														<h2 class="table-avatar">
-															<a href="doctor_profile?doctor_num={{transaction.13}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/doctor/profileImg/{{transaction.53}}" alt="User Image"></a>
-															<a href="doctor_profile?doctor_num={{transaction.13}}">{{transaction.40}} </a>
+															<a href="doctor_profile?doctor_num={{transaction.4}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/doctor/profileImg/{{transaction.3}}" alt="User Image"></a>
+															<a href="doctor_profile?doctor_num={{transaction.4}}">{{transaction.5}} </a>
 														</h2>
 													</td>
-													<td class="text-center">{{transaction.59}}
+													<td class="text-center">{{transaction.6}}
 													</td>
-													<td class="text-center">{{transaction.60}}
+													<td class="text-center">{{transaction.7}}
 													</td>
 													<td class="text-center">
-													{% if transaction.4.strip == '1' %}
-														{{transaction.61}}
+													{% if transaction.10.strip == '1' %}
+														{{transaction.9}}
 													{% endif %}
 													</td>
 													<td>
-													{% if transaction.4.strip == '1' %}
-														{{transaction.10 |intcomma}}<span>원</span>
+													{% if transaction.10.strip == '1' %}
+														{{transaction.8 |intcomma}}<span>원</span>
 													{% endif %}
 													</td>
 													<td class="text-center">
-													{% if transaction.4.strip == '1' %}
+													{% if transaction.10.strip == '1' %}
 														<span class="badge badge-pill bg-success inv-badge">결제완료</span>
 													{% else %}
 														<span class="badge badge-pill bg-danger inv-badge">미결제</span>
@@ -103,9 +98,22 @@
 							</div>
 						</div>			
 					</div>
-				</div>			
-			</div>
-			<!-- /Page Wrapper -->
+					<div class="row">
+									<div class="col-md-12">
+										<div class="blog-pagination">
+											<nav>
+												<ul class="pagination justify-content-center">
+													{% for p in p_num %}
+													<li class="page-item">
+														<a class="page-link" href="transactions_list?p_num={{p}}">{{p}}</a>
+													</li>
+													{% endfor %}
+												</ul>
+											</nav>
+										</div>
+									</div>
+								</div>
+				</div>
 		
 		<!-- Delete Modal -->
 			<div class="modal fade" id="delete_modal" aria-hidden="true" role="dialog">
@@ -133,7 +141,5 @@
 				</div>
 			</div>
 			<!-- /Delete Modal -->
-		
-        </div>
-		<!-- /Main Wrapper -->
+
 {% endblock content %}

@@ -434,7 +434,7 @@ $(function(){
 											<a href="patient_profile?patient_num={{patient.10}}">{{patient.2}} </a>
 										</h2>
 									</td>
-									<td>{{patient.7}}</td>
+									<td>{{ patient.7|slice:"0:3" }}-{{ patient.7|slice:"3:7" }}-{{ patient.7|slice:"7:11" }}</td>
 									<td>20 Oct 2019</td>
 									<td class="text-right">$100.00</td>
 								</tr>

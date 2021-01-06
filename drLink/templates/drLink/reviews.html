@@ -54,7 +54,7 @@
 													<td class="text-center">
 														<h2 class="table-avatar">
 															<a href="doctor_profile?doctor_num={{review.3}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/doctor/profileImg/{{review.2}}" alt="User Image"></a>
-															<a href="doctor_profile?doctor_num={{review.3}}">{{review.1}}</a>
+															<a href="doctor_profile?doctor_num={{review.3}}">{{review.1}} 선생님</a>
 														</h2>
 													</td>
 
@@ -78,7 +78,10 @@
 													</td>
 												</tr>
 												<tr>
-													<td colspan="6" style="border-bottom: 1px solid black;"><strong>{{review.5}}</strong></td>
+													<td style="border-bottom: 1px solid black;">
+													<td colspan="5" style="border-bottom: 1px solid black;">
+														<i class="far fa-comment"></i>
+														<strong>{{review.5}}</strong></td>
 												</tr>
 											{% endfor %}
 											</tbody>

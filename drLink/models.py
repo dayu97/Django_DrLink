@@ -246,7 +246,7 @@ def getReviewList(p_num, number_page):
                " where a.doctor_num=c.doctor_num and a.patient_num=b.patient_num group by a.review_num, c.d_name, c.d_photo, c.doctor_num, b.p_name, a.review_content, a.review_rating, a.review_date order by a.review_num desc) nnn"\
                " ) nn where r_num between 1 and {} ".format(number_page)
     else:
-        start, end = p_num * number_page - 10, p_num * number_page
+        start, end = p_num * number_page - 9, p_num * number_page
         sql = "select nn.* from (select nnn.*, rownum r_num from (" \
               " select a.review_num, c.d_name, c.d_photo, c.doctor_num, b.p_name, a.review_content, a.review_rating, a.review_date, (select count(*) from doc_review) as cnt from doc_review a, dl_user b, dl_doctor c " \
               " where a.doctor_num=c.doctor_num and a.patient_num=b.patient_num group by a.review_num, c.d_name, c.d_photo, c.doctor_num, b.p_name, a.review_content, a.review_rating, a.review_date order by a.review_num desc) nnn" \
@@ -272,15 +272,31 @@ def deleteReviewSave(review_num):
     conn.commit()
     conn.close()
 
-def getTransactionsList():
+def getTransactionsList(p_num, number_page):
     conn = ora.connect(database)
     cursor = conn.cursor()
-    sql = "select a.*, b.*, c.*, d.*, e.*, to_char(prescription_date,'YYYY-MM-DD'), to_char(paydate,'YYYY-MM-DD') from prescription a, payment_record b, dl_user c, dl_doctor d, department e where b.prescription_num(+)=a.prescription_num and a.patient_num=c.patient_num and a.doctor_num=d.doctor_num and d.dep_num=e.dep_num order by prescription_date desc "
-    cursor.execute(sql)
-    re = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return re
+    p_num = int(p_num)
+    if p_num == 1:
+        sql = "select nn.* from (select nnn.*, rownum r_num from (" \
+              " select a.prescription_num,c.patient_num,c.p_name,d.d_photo,d.doctor_num,d.d_name,e.dep_name, a.prescription_date,b.price,b.paydate,a.payment_check,(select count(*) from prescription) as cnt" \
+              " from prescription a, payment_record b, dl_user c, dl_doctor d, department e where b.prescription_num(+)=a.prescription_num" \
+              " and a.patient_num = c.patient_num and a.doctor_num = d.doctor_num and d.dep_num = e.dep_num order by a.prescription_date desc) nnn ) nn where r_num between 1 and {} ".format(number_page)
+    else:
+        start, end = p_num * number_page - 9, p_num * number_page
+        sql = "select nn.* from (select nnn.*, rownum r_num from (" \
+              " select a.prescription_num,c.patient_num,c.p_name,d.d_photo,d.doctor_num,d.d_name,e.dep_name, a.prescription_date,b.price,b.paydate,a.payment_check,(select count(*) from prescription) as cnt" \
+              " from prescription a, payment_record b, dl_user c, dl_doctor d, department e where b.prescription_num(+)=a.prescription_num" \
+              " and a.patient_num = c.patient_num and a.doctor_num = d.doctor_num and d.dep_num = e.dep_num order by a.prescription_date desc) nnn ) nn where r_num between {} and {} ".format(start, end)
+    try:
+        cursor.execute(sql)
+        re = cursor.fetchall()
+        cursor.close()
+        return re
+    except Exception as e:
+        print(e)
+        print("실패")
+    finally:
+        conn.close()
 
 def deleteTransactionSave(prescription_num):
     conn = ora.connect(database)

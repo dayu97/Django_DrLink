@@ -162,10 +162,16 @@ def specialities(request):
 def transactions_list(request):
     if 'id' not in request.session: #로그인 필터
         return redirect("/drLink")
-
-    result = getTransactionsList()
-    print(len(result))
-    return render(request, "drLink/transactions_list.html", {'transactionList':result})
+    number_page = 10
+    try:
+        if request.GET['p_num'] != None:
+            result = getTransactionsList(request.GET['p_num'], number_page)
+    except Exception as ex:
+        print(ex)
+        result = getTransactionsList(1, number_page)
+    page_num = math.ceil(result[0][11] / number_page)
+    page_num = [i for i in range(1, page_num + 1)]
+    return render(request, "drLink/transactions_list.html", {'transactionList': result, 'p_num': page_num})
 
 #2020-12-29 송은
 def insertSpeciality(request):
