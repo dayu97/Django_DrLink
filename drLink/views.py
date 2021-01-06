@@ -139,9 +139,16 @@ def question(request):
 def reviews(request):
     if 'id' not in request.session: #로그인 필터
         return redirect("/drLink")
-
-    result = getReviewList()
-    return render(request, "drLink/reviews.html", {'reviewList':result})
+    number_page = 10
+    try:
+        if request.GET['p_num'] != None:
+            result = getReviewList(request.GET['p_num'], number_page)
+    except Exception as ex:
+        print(ex)
+        result = getReviewList(1, number_page)
+    page_num = math.ceil(result[0][7] / number_page)
+    page_num = [i for i in range(1, page_num+1)]
+    return render(request, "drLink/reviews.html", {'reviewList':result,'p_num':page_num})
 
 #2020-12-29 송은
 def specialities(request):
@@ -195,7 +202,37 @@ def doctor_profile(request):
         return redirect("/drLink")
     print("request.GET['doctor_num']: ", request.GET['doctor_num'])
     result = getDoctorInfo(request.GET['doctor_num'])
-    return render(request, 'drLink/doctor_profile.html',{'doctor':result})
+    print("result ",result[12])
+    graduation = result[12].split(',')
+    career = result[13].split(',')
+    gg = []
+    gradu = []
+    c_detail=[]
+    c_detail2=[]
+    cnt = 1
+    for i in range(len(graduation)+1):
+        if i < 3*cnt:
+            gradu.append(graduation[i])
+        elif i <= 3*cnt:
+            cnt += 1
+            gg.append(gradu)
+            gradu = []
+            if i >= len(graduation):
+                break
+            gradu.append(graduation[i])
+
+    cnt = 1
+    for i in range(len(career)+1):
+        if i < 3*cnt:
+            c_detail.append(career[i])
+        elif i <= 3*cnt:
+            cnt += 1
+            c_detail2.append(c_detail)
+            c_detail=[]
+            if i >= len(career):
+                break
+            c_detail.append(career[i])
+    return render(request, 'drLink/doctor_profile.html',{'doctor':result,'graduation':gg,'career':c_detail2})
 
 def patient_profile(request):
     if 'id' not in request.session: #로그인 필터

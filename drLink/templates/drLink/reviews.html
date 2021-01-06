@@ -50,24 +50,24 @@
 											{% for review in reviewList %}
 												<tr>
 													<td class="text-center">{{review.0}}</td>
-													<td class="text-center">{{review.9}}</td>
+													<td class="text-center">{{review.3}}</td>
 													<td class="text-center">
 														<h2 class="table-avatar">
-															<a href="doctor_profile?doctor_num={{review.1}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/doctor/profileImg/{{review.40}}" alt="User Image"></a>
-															<a href="doctor_profile?doctor_num={{review.1}}">{{review.27}}</a>
+															<a href="doctor_profile?doctor_num={{review.1}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/doctor/profileImg/{{review.2}}" alt="User Image"></a>
+															<a href="doctor_profile?doctor_num={{review.1}}">{{review.1}}</a>
 														</h2>
 													</td>
 
 													<td class="text-center">
 														{% for i in '01234'|make_list %}
-															{% if review.4 > forloop.counter0 %}
+															{% if review.5 > forloop.counter0 %}
 																<i class="fe fe-star text-warning"></i>
 															{% else %}
 																<i class="fe fe-star-o text-secondary"></i>
 															{% endif %}
 														{% endfor %}
 													</td>
-													<td class="text-center">{{review.5}}</td>
+													<td class="text-center">{{review.6}}</td>
 													<td class="text-center">
 														<div class="actions">
 															<a class="btn btn-sm bg-danger-light" data-toggle="modal" href="#delete_modal">
@@ -78,7 +78,7 @@
 													</td>
 												</tr>
 												<tr>
-													<td colspan="6" style="border-bottom: groove;">{{review.3}}</td>
+													<td colspan="6" style="border-bottom: groove;">{{review.4}}</td>
 												</tr>
 											{% endfor %}
 											</tbody>
@@ -86,12 +86,25 @@
 									</div>
 								</div>
 							</div>
-						</div>			
+						</div>
 					</div>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="blog-pagination">
+											<nav>
+												<ul class="pagination justify-content-center">
+													{% for p in p_num %}
+													<li class="page-item">
+														<a class="page-link" href="reviews?p_num={{p}}">{{p}}</a>
+													</li>
+													{% endfor %}
+												</ul>
+											</nav>
+										</div>
+									</div>
+								</div>
 					
-				</div>			
-			</div>
-			<!-- /Page Wrapper -->
+				</div>
 			
 			<!-- Delete Modal -->
 			<div class="modal fade" id="delete_modal" aria-hidden="true" role="dialog">
@@ -119,6 +132,4 @@
 				</div>
 			</div>
 			<!-- /Delete Modal -->
-        </div>
-		<!-- /Main Wrapper -->
 {% endblock content %}

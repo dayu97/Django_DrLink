@@ -19,12 +19,11 @@ def LoginCheck(id, pwd):
 def getSumPrice() :
     conn = ora.connect(database)
     cursor = conn.cursor()
-    sql = "select to_char(paydate,'yy/mm/dd'), sum(price) from payment_record group by paydate order by paydate"
+    sql = "select sum(price) from payment_record order by paydate"
     cursor.execute(sql)
-    re = cursor.fetchall()
+    re = cursor.fetchone()
     cursor.close()
     conn.close()
-    print(re)
     return re
 
 def getPriceChart():
@@ -237,15 +236,33 @@ def getPatientInfo(patient_num):
     conn.close()
     return re
 
-def getReviewList():
+def getReviewList(p_num, number_page):
     conn = ora.connect(database)
     cursor = conn.cursor()
-    sql = "select * from doc_review a, dl_user b, dl_doctor c where a.doctor_num=c.doctor_num and a.patient_num=b.patient_num"
-    cursor.execute(sql)
-    re = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return re
+    p_num = int(p_num)
+    if p_num == 1:
+        sql = "select nn.* from (select nnn.*, rownum r_num from ("\
+               " select a.review_num, c.d_name, c.d_photo, b.p_name, a.review_content, a.review_rating, a.review_date, (select count(*) from doc_review) as cnt from doc_review a, dl_user b, dl_doctor c "\
+               " where a.doctor_num=c.doctor_num and a.patient_num=b.patient_num group by a.review_num, c.d_name, c.d_photo, b.p_name, a.review_content, a.review_rating, a.review_date order by a.review_num desc) nnn"\
+               " ) nn where r_num between 1 and {} ".format(number_page)
+    else:
+        start, end = p_num * number_page - 10, p_num * number_page
+        sql = "select nn.* from (select nnn.*, rownum r_num from (" \
+              " select a.review_num, c.d_name, c.d_photo, b.p_name, a.review_content, a.review_rating, a.review_date, (select count(*) from doc_review) as cnt from doc_review a, dl_user b, dl_doctor c " \
+              " where a.doctor_num=c.doctor_num and a.patient_num=b.patient_num group by a.review_num, c.d_name, c.d_photo, b.p_name, a.review_content, a.review_rating, a.review_date order by a.review_num desc) nnn" \
+              " ) nn where r_num between {} and {} ".format(start, end)
+    try:
+        cursor.execute(sql)
+        print(sql)
+        re = cursor.fetchall()
+        cursor.close()
+        return re
+    except Exception as e:
+        print(e)
+        print("실패")
+    finally:
+        conn.close()
+
 
 def deleteReviewSave(review_num):
     conn = ora.connect(database)

@@ -238,7 +238,7 @@ $(function(){
 							<i class="fe fe-money"></i>
 						</span>
 						<div class="dash-count">
-							<h3>￦{{sum_price.1.1|intcomma}}</h3>
+							<h3>￦{{sum_price.0|intcomma}}</h3>
 						</div>
 					</div>
 					<div class="dash-widget-info">
@@ -387,11 +387,13 @@ $(function(){
 									<td>{{doctor.3}}</td>
 									<td>{{doctor.8}}</td>
 									<td>
-										<i class="fe fe-star text-warning"></i>
-										<i class="fe fe-star text-warning"></i>
-										<i class="fe fe-star text-warning"></i>
-										<i class="fe fe-star text-warning"></i>
-										<i class="fe fe-star-o text-secondary"></i>
+										<!--{% for i in '01234'|make_list %}
+											{% if review.4 > forloop.counter0 %}
+												<i class="fe fe-star text-warning"></i>
+											{% else %}
+												<i class="fe fe-star-o text-secondary"></i>
+											{% endif %}
+										{% endfor %}-->
 									</td>
 								</tr>
 

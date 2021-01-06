@@ -20,6 +20,7 @@ urlpatterns=[
     # path('deleteTransaction', views.deleteTransaction),
 
     path('', views.home),
+    path('index', views.home),
     path('adminLogin', views.adminLogin),
     path('adminLogout', views.adminLogout),
     path('appointment_list', views.appointment_list),
