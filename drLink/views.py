@@ -157,7 +157,9 @@ def specialities(request):
         return redirect("/drLink")
 
     result = getSpecialitiesList() # [[dep_num, dep_name], ...]
-    return render(request, "drLink/specialities.html",{'specialities':result})
+    doctorList_result = getDoctorList(1, 100)
+    print(doctorList_result[0][4])
+    return render(request, "drLink/specialities.html",{'specialities':result,'doctorList':doctorList_result})
 
 def transactions_list(request):
     if 'id' not in request.session: #로그인 필터

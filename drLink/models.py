@@ -159,15 +159,15 @@ def getDoctorList(p_num, number_page):
     cursor = conn.cursor()
     p_num = int(p_num)
     if p_num == 1:
-     sql = "select nn.* from ( select nnn.*, rownum r_num from (SELECT a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.d_phone_num, a.d_email, to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD'),count(c.doctor_num) as cnt, (select count(*) from dl_doctor) " \
+     sql = "select nn.* from ( select nnn.*, rownum r_num from (SELECT a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email, to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD'),count(c.doctor_num) as cnt, (select count(*) from dl_doctor) " \
           " FROM dl_doctor a LEFT JOIN appointment c ON a.doctor_num = c.doctor_num join department b on a.dep_num = b.dep_num " \
-          " GROUP BY a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.d_phone_num, a.d_email,to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD') order by to_char(d_regdate,'YYYY-MM-DD')) nnn ) nn "\
+          " GROUP BY a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email,to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD') order by to_char(d_regdate,'YYYY-MM-DD')) nnn ) nn "\
           " where r_num between 1 and {} ".format(number_page)
     else:
         start, end = p_num * number_page-9, p_num * number_page
-        sql = "select nn.* from ( select nnn.*, rownum r_num from (SELECT a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.d_phone_num, a.d_email, to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD'),count(c.doctor_num) as cnt, (select count(*) from dl_doctor) "\
+        sql = "select nn.* from ( select nnn.*, rownum r_num from (SELECT a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email, to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD'),count(c.doctor_num) as cnt, (select count(*) from dl_doctor) "\
           " FROM dl_doctor a LEFT JOIN appointment c ON a.doctor_num = c.doctor_num join department b on a.dep_num = b.dep_num "\
-          " GROUP BY a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.d_phone_num, a.d_email,to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD') order by to_char(d_regdate,'YYYY-MM-DD')) nnn ) nn "\
+          " GROUP BY a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email,to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD') order by to_char(d_regdate,'YYYY-MM-DD')) nnn ) nn "\
           " where r_num between {} and {} ".format(start, end)
     try:
         cursor.execute(sql)
@@ -278,13 +278,13 @@ def getTransactionsList(p_num, number_page):
     p_num = int(p_num)
     if p_num == 1:
         sql = "select nn.* from (select nnn.*, rownum r_num from (" \
-              " select a.prescription_num,c.patient_num,c.p_name,d.d_photo,d.doctor_num,d.d_name,e.dep_name, a.prescription_date,b.price,b.paydate,a.payment_check,(select count(*) from prescription) as cnt" \
+              " select a.prescription_num,c.patient_num,c.p_name,d.d_photo,d.doctor_num,d.d_name,e.dep_name, a.prescription_date,a.price,b.paydate,a.payment_check,(select count(*) from prescription) as cnt" \
               " from prescription a, payment_record b, dl_user c, dl_doctor d, department e where b.prescription_num(+)=a.prescription_num" \
               " and a.patient_num = c.patient_num and a.doctor_num = d.doctor_num and d.dep_num = e.dep_num order by a.prescription_date desc) nnn ) nn where r_num between 1 and {} ".format(number_page)
     else:
         start, end = p_num * number_page - 9, p_num * number_page
         sql = "select nn.* from (select nnn.*, rownum r_num from (" \
-              " select a.prescription_num,c.patient_num,c.p_name,d.d_photo,d.doctor_num,d.d_name,e.dep_name, a.prescription_date,b.price,b.paydate,a.payment_check,(select count(*) from prescription) as cnt" \
+              " select a.prescription_num,c.patient_num,c.p_name,d.d_photo,d.doctor_num,d.d_name,e.dep_name, a.prescription_date,a.price,b.paydate,a.payment_check,(select count(*) from prescription) as cnt" \
               " from prescription a, payment_record b, dl_user c, dl_doctor d, department e where b.prescription_num(+)=a.prescription_num" \
               " and a.patient_num = c.patient_num and a.doctor_num = d.doctor_num and d.dep_num = e.dep_num order by a.prescription_date desc) nnn ) nn where r_num between {} and {} ".format(start, end)
     try:

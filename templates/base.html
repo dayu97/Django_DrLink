@@ -160,28 +160,28 @@ body {
 							<li class="menu-title"> 
 								<span>Main</span>
 							</li>
-							<li class="active"> 
+							<li class="active move_active">
 								<a href="/drLink"><i class="fe fe-home"></i> <span>Admin_Home</span></a>
 							</li>
-							<li> 
+							<li class="move_active">
 								<a href="appointment_list"><i class="fe fe-layout"></i> <span>예약현황</span></a>
 							</li>
-							<li> 
+							<li class="move_active">
 								<a href="specialities"><i class="fe fe-users"></i> <span>진료과목</span></a>
 							</li>
-							<li> 
+							<li class="move_active">
 								<a href="doctor_list"><i class="fe fe-user-plus"></i> <span>의사관리</span></a>
 							</li>
-							<li> 
+							<li class="move_active">
 								<a href="patient_list"><i class="fe fe-user"></i> <span>환자관리</span></a>
 							</li>
-							<li> 
+							<li class="move_active">
 								<a href="reviews"><i class="fe fe-star-o"></i> <span>후기관리</span></a>
 							</li>
-							<li> 
+							<li class="move_active">
 								<a href="transactions_list"><i class="fe fe-activity"></i> <span>결제관리</span></a>
 							</li>
-							<li class="submenu">
+							<li class="submenu move_active">
 								<a><i class="fe fe-document"></i> <span> 게시판관리 </span> <span class="menu-arrow"></span></a>
 								<ul style="display: none;">
 									<li><a href="notice"> 공지사항 </a></li>
@@ -224,6 +224,15 @@ body {
 		<script  src="{{baseUrl}}js/script.js"></script>
 		<script src="https://d3js.org/d3.v5.min.js"></script>
 		<script src="{{baseUrl}}js/c3.min.js"></script>
-		
+		<script>
+			$(function(){
+
+				$('li.move_active').click(function(){
+
+					$('li.move_active').removeClass('active');
+					$(this).addClass('active');
+				}) // click
+			}) // ready
+		</script>
     </body>
 </html>

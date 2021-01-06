@@ -14,8 +14,6 @@
 			var index = $(this).closest('tr').index();
 			$('.dep_num').val($('tbody > tr:eq('+index+')').find('td:eq(0)').find('span').text());
 		});
-
-
 	});
 </script>
                 <div class="content container-fluid">
@@ -61,7 +59,7 @@
 																<img class="avatar-img" src="{{baseUrl}}/img/specialities/specialities-01.png" alt="Speciality">
 															</a>
 															-->
-															<a>{{speciality.1}}</a>
+															<a data-toggle="modal" href="#doctor_list{{speciality.0}}">{{speciality.1}}</a>
 														</h2>
 													</td>
 												
@@ -189,6 +187,70 @@
 				</div>
 			</div>
 			<!-- /Delete Modal -->
-        </div>
-		<!-- /Main Wrapper -->
+
+			<!-- doctor_list Modal -->
+			{% for a in specialities %}
+			<div class="modal fade" id="doctor_list{{a.0}}" aria-hidden="true" role="dialog">
+				<div class="modal-dialog modal-dialog-centered" role="document" >
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">의사 목록</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+								{% csrf_token %}
+								<div class="row justify-content-center">
+										<div class="text-center">
+											<label>{{a.1}}</label>
+											<div class="table-responsive">
+											<table class="datatable table table-hover table-center">
+												<thead>
+													<tr>
+														<th class="text-center">No</th>
+														<th class="text-center">의사이름</th>
+														<th class="text-center">입사일</th>
+														<th class="text-center">상태</th>
+
+													</tr>
+												</thead>
+												<tbody>
+													<!--  의사 리스트 -->
+													{% for doctor in doctorList %}
+													{% if doctor.4 == a.0 %}
+													<tr>
+														<input type="hidden" name="doctor_num" value="{{doctor.0}}">
+														<td class="text-center">D0<span>{{doctor.0}}</span></td>
+														<td class="text-center">
+															<h2 class="table-avatar">
+																<a href="doctor_profile?doctor_num={{doctor.0}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/doctor/profileImg/{{doctor.2}}" alt="User Image"></a>
+																<a href="doctor_profile?doctor_num={{doctor.0}}">{{doctor.1}}</a>
+															</h2>
+														</td>
+														<td class="text-center">{{ doctor.7|slice:"0:4" }}년 {{ doctor.7|slice:"5:7" }}월 {{ doctor.7|slice:"8:10" }}일</td>
+														<td class="text-center">
+															{% if doctor.8 %}
+															<span class="badge badge-pill bg-danger-light">퇴직</span>
+															{% else %}
+															<span class="badge badge-pill bg-success-light">재직</span>
+															{% endif %}
+														</td>
+													</tr>
+													<!--  의사 리스트 -->
+													{% endif %}
+												{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+			<!-- /doctor_list Modal -->
+
+
 {% endblock content %}
