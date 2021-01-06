@@ -52,7 +52,13 @@
 											{% for transaction in transactionList %}
 												<tr>
 													<td class="text-center"><a>#IN0<span>{{transaction.0}}</span></a></td>
-													<td class="text-center">{{transaction.2}}</td>
+													<td class="text-center">
+														<h2 class="table-avatar">
+														<a href="patient_profile?patient_num={{transaction.1}}">
+															{{transaction.2}}
+														</a>
+														</h2>
+													</td>
 													<td class="text-center">
 														<h2 class="table-avatar">
 															<a href="doctor_profile?doctor_num={{transaction.4}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/doctor/profileImg/{{transaction.3}}" alt="User Image"></a>

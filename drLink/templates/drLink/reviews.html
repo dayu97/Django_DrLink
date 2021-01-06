@@ -50,7 +50,13 @@
 											{% for review in reviewList %}
 												<tr>
 													<td class="text-center">{{review.0}}</td>
-													<td class="text-center">{{review.4}}</td>
+													<td class="text-center">
+														<h2 class="table-avatar">
+														<a href="patient_profile?patient_num={{review.5}}">
+															{{review.4}}
+														</a>
+														</h2>
+														</td>
 													<td class="text-center">
 														<h2 class="table-avatar">
 															<a href="doctor_profile?doctor_num={{review.3}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/doctor/profileImg/{{review.2}}" alt="User Image"></a>
@@ -60,14 +66,14 @@
 
 													<td class="text-center">
 														{% for i in '01234'|make_list %}
-															{% if review.6 > forloop.counter0 %}
+															{% if review.7 > forloop.counter0 %}
 																<i class="fe fe-star text-warning"></i>
 															{% else %}
 																<i class="fe fe-star-o text-secondary"></i>
 															{% endif %}
 														{% endfor %}
 													</td>
-													<td class="text-center">{{review.7}}</td>
+													<td class="text-center">{{review.8}}</td>
 													<td class="text-center">
 														<div class="actions">
 															<a class="btn btn-sm bg-danger-light" data-toggle="modal" href="#delete_modal">
@@ -81,7 +87,7 @@
 													<td style="border-bottom: 1px solid black;">
 													<td colspan="5" style="border-bottom: 1px solid black;">
 														<i class="far fa-comment"></i>
-														<strong>{{review.5}}</strong></td>
+														<strong>{{review.6}}</strong></td>
 												</tr>
 											{% endfor %}
 											</tbody>

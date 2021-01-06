@@ -160,7 +160,7 @@ body {
 							<li class="menu-title"> 
 								<span>Main</span>
 							</li>
-							<li class="active move_active">
+							<li class="move_active">
 								<a href="/drLink"><i class="fe fe-home"></i> <span>Admin_Home</span></a>
 							</li>
 							<li class="move_active">
@@ -224,15 +224,5 @@ body {
 		<script  src="{{baseUrl}}js/script.js"></script>
 		<script src="https://d3js.org/d3.v5.min.js"></script>
 		<script src="{{baseUrl}}js/c3.min.js"></script>
-		<script>
-			$(function(){
-
-				$('li.move_active').click(function(){
-
-					$('li.move_active').removeClass('active');
-					$(this).addClass('active');
-				}) // click
-			}) // ready
-		</script>
     </body>
 </html>

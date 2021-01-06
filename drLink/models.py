@@ -129,18 +129,18 @@ def getAppointmentList(p_num, number_page):
     if p_num == 1:
         sql = "select nn.* from ( select nnn.*, rownum r_num from (" \
             " select a.doctor_num, d_name, d_photo, d.dep_name, a.patient_num, p_name, p_photo, appointment_num, appointment_date, appointment_time, " \
-            " to_char(reg_date,'YYYY-MM-DD') ,(select count(*) from appointment where appointment_date > to_char(sysdate, 'yyyy-mm-dd')) as cnt" \
+            " to_char(reg_date,'YYYY-MM-DD') ,(select count(*) from appointment where appointment_date > to_char(sysdate, 'yyyy-mm-dd')) as cnt,(select count(*) from appointment) as allcnt" \
             " from appointment a, dl_doctor b, dl_user c, department d " \
             " where a.doctor_num=b.doctor_num and a.patient_num=c.patient_num and b.dep_num=d.dep_num and appointment_date > to_char(sysdate, 'yyyy-mm-dd')"\
-            " order by appointment_date ) nnn ) nn where r_num between 1 and 10 "
+            " order by appointment_date ) nnn ) nn where r_num between 1 and 10 order by appointment_date,appointment_time  "
     else:
         start, end = p_num * number_page - 9, p_num * number_page
         sql = "select nn.* from ( select nnn.*, rownum r_num from ("\
             " select a.doctor_num, d_name, d_photo, d.dep_name, a.patient_num, p_name, p_photo, appointment_num, appointment_date, appointment_time, " \
-            " to_char(reg_date,'YYYY-MM-DD') ,(select count(*) from appointment where appointment_date > to_char(sysdate, 'yyyy-mm-dd')) as cnt"\
+            " to_char(reg_date,'YYYY-MM-DD') ,(select count(*) from appointment where appointment_date > to_char(sysdate, 'yyyy-mm-dd')) as cnt,(select count(*) from appointment) as allcnt"\
             " from appointment a, dl_doctor b, dl_user c, department d "\
             " where a.doctor_num=b.doctor_num and a.patient_num=c.patient_num and b.dep_num=d.dep_num and appointment_date > to_char(sysdate, 'yyyy-mm-dd')"\
-            " order by appointment_date ) nnn ) nn where r_num between {} and {} ".format(start, end)
+            " order by appointment_date ) nnn ) nn where r_num between {} and {} order by appointment_date,appointment_time  ".format(start, end)
     try:
         cursor.execute(sql)
         n_boardList = cursor.fetchall()
@@ -242,14 +242,14 @@ def getReviewList(p_num, number_page):
     p_num = int(p_num)
     if p_num == 1:
         sql = "select nn.* from (select nnn.*, rownum r_num from ("\
-               " select a.review_num, c.d_name, c.d_photo, c.doctor_num, b.p_name, a.review_content, a.review_rating, a.review_date, (select count(*) from doc_review) as cnt from doc_review a, dl_user b, dl_doctor c "\
-               " where a.doctor_num=c.doctor_num and a.patient_num=b.patient_num group by a.review_num, c.d_name, c.d_photo, c.doctor_num, b.p_name, a.review_content, a.review_rating, a.review_date order by a.review_num desc) nnn"\
+               " select a.review_num, c.d_name, c.d_photo, c.doctor_num, b.p_name, b.patient_num, a.review_content, a.review_rating, a.review_date, (select count(*) from doc_review) as cnt from doc_review a, dl_user b, dl_doctor c "\
+               " where a.doctor_num=c.doctor_num and a.patient_num=b.patient_num group by a.review_num, c.d_name, c.d_photo, c.doctor_num, b.p_name, b.patient_num, a.review_content, a.review_rating, a.review_date order by a.review_num desc) nnn"\
                " ) nn where r_num between 1 and {} ".format(number_page)
     else:
         start, end = p_num * number_page - 9, p_num * number_page
         sql = "select nn.* from (select nnn.*, rownum r_num from (" \
-              " select a.review_num, c.d_name, c.d_photo, c.doctor_num, b.p_name, a.review_content, a.review_rating, a.review_date, (select count(*) from doc_review) as cnt from doc_review a, dl_user b, dl_doctor c " \
-              " where a.doctor_num=c.doctor_num and a.patient_num=b.patient_num group by a.review_num, c.d_name, c.d_photo, c.doctor_num, b.p_name, a.review_content, a.review_rating, a.review_date order by a.review_num desc) nnn" \
+              " select a.review_num, c.d_name, c.d_photo, c.doctor_num, b.p_name, b.patient_num,a.review_content, a.review_rating, a.review_date, (select count(*) from doc_review) as cnt from doc_review a, dl_user b, dl_doctor c " \
+              " where a.doctor_num=c.doctor_num and a.patient_num=b.patient_num group by a.review_num, c.d_name, c.d_photo, c.doctor_num, b.p_name,b.patient_num, a.review_content, a.review_rating, a.review_date order by a.review_num desc) nnn" \
               " ) nn where r_num between {} and {} ".format(start, end)
     try:
         cursor.execute(sql)
