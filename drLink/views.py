@@ -146,8 +146,9 @@ def reviews(request):
     except Exception as ex:
         print(ex)
         result = getReviewList(1, number_page)
-    page_num = math.ceil(result[0][7] / number_page)
+    page_num = math.ceil(result[0][8] / number_page)
     page_num = [i for i in range(1, page_num+1)]
+    print(result)
     return render(request, "drLink/reviews.html", {'reviewList':result,'p_num':page_num})
 
 #2020-12-29 송은
