@@ -20,8 +20,8 @@ def home(request):
         patient_count = getPatientCount()
         gender = getGender()
         priceChart=getPriceChart()
-        print(priceChart)
-        return render(request, "drLink/index.html",{'priceChart':priceChart,'gender':gender,'newChart':newChart,'appointmentList':appointment_result,'doctorList':doctorList_result,'patientList':patientListresult,'sum_price':sum_price,'patient_count':patient_count})
+        seosonPrice=getSeasonPrice()
+        return render(request, "drLink/index.html",{'seosonPrice':seosonPrice,'priceChart':priceChart,'gender':gender,'newChart':newChart,'appointmentList':appointment_result,'doctorList':doctorList_result,'patientList':patientListresult,'sum_price':sum_price,'patient_count':patient_count})
 
     return render(request, "drLink/login.html")
 

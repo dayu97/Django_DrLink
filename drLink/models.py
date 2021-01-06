@@ -4,7 +4,7 @@ import cx_Oracle as ora
 #database = 'final_dr/test00@192.168.0.44:1522/orcl1'
 # database = 'drLink/123@123.214.63.87:1521/orcl'
 database = 'drlink/drlink00@192.168.0.52/orcl'
-#database = 'test/test@192.168.0.52/orcl'
+#database = 'test/test00@192.168.0.52/orcl'
 # Create your models here.
 
 def LoginCheck(id, pwd):
@@ -23,6 +23,20 @@ def getSumPrice() :
     sql = "select sum(price) from payment_record order by paydate"
     cursor.execute(sql)
     re = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return re
+
+def getSeasonPrice():
+    conn = ora.connect(database)
+    cursor = conn.cursor()
+    sql="select  to_char(extract(year from sysdate))," \
+        "nvl((select sum(price) from payment_record where to_char(extract(year from sysdate)) = to_char(paydate,'yyyy') and to_char(paydate,'q')=to_char(sysdate,'q')),0)," \
+        "nvl((select sum(price) from payment_record where to_char(extract(year from sysdate)) = to_char(paydate,'yyyy') and to_char(paydate,'q')=to_char(sysdate,'q')+1),0)," \
+        "nvl((select sum(price) from payment_record where to_char(extract(year from sysdate)) = to_char(paydate,'yyyy') and to_char(paydate,'q')=to_char(sysdate,'q')+2),0)," \
+        "nvl((select sum(price) from payment_record where to_char(extract(year from sysdate)) = to_char(paydate,'yyyy') and to_char(paydate,'q')=to_char(sysdate,'q')+3),0) from dual "
+    cursor.execute(sql)
+    re = cursor.fetchall()
     cursor.close()
     conn.close()
     return re
@@ -68,6 +82,7 @@ def getPatientCount() :
     cursor.close()
     conn.close()
     return re
+
 
 def getNewChart():
     conn = ora.connect(database)

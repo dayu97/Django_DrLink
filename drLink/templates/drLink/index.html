@@ -2,6 +2,22 @@
 {% load humanize %}
 {% block content %}
 
+<style>
+.c3-axis-y text
+{
+     font-size: 12px;
+}
+
+.c3-axis-x text
+{
+     font-size: 15px;
+}
+.c3-legend-item
+{
+     font-size: 15px;
+}
+
+</style>
 <script src="https://d3js.org/d3.v3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"></script>
 <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -22,6 +38,9 @@ $(function(){
 			type: 'bar'
 		},
 		axis: {
+			x:{
+				show: false
+			},
 			y2: {
 				show: true
 			}
@@ -58,7 +77,7 @@ $(function(){
 			},
 			y : {
 				tick: {
-					format: function (d) { return "￦" + d; }
+					format: d3.format(",")
 				}
 			}
 		},
@@ -70,6 +89,45 @@ $(function(){
 				show: true
 			},
 			y: {
+				show: true
+			}
+		},
+		tooltip: {
+			format: {
+				value: function(value) {
+					return d3.format(",")(value)
+				}
+			}
+		}
+	});
+
+	var seasonData =[];
+	var len = $('input[name=year]').length;
+	for(var i = 0 ; i<len ; i++){
+		seasonData.push([$('input[name=year]').eq(i).val(),$('input[name=one]').eq(i).val(),$('input[name=two]').eq(i).val(),$('input[name=three]').eq(i).val(),$('input[name=four]').eq(i).val()]);
+	}
+	var seasonData = c3.generate({
+		bindto: '#seasonData',
+		data: {
+			columns:seasonData,
+			type:'spline'
+       	},
+		axis: {
+			x: {
+				type: 'category',
+				categories: ['1분기', '2분기', '3분기', '4분기']
+			},
+			y : {
+				tick: {
+				format: d3.format(",")
+				}
+			}
+		},
+		color: {
+			pattern: [ '#17becf']
+		},
+		grid: {
+			x: {
 				show: true
 			}
 		},
@@ -157,6 +215,13 @@ $(function(){
 	<input type="hidden" name="wed" class="wed" value="{{wed}}">
 	<input type="hidden" name="thu" class="thu" value="{{thu}}">
 	<input type="hidden" name="fri" class="fri" value="{{fri}}">
+	{% endfor %}
+	{% for year,one,two,three,four in seosonPrice%}
+	<input type="hidden" name="year" class="year" value="올해 분기별 수익">
+	<input type="hidden" name="one" class="one" value="{{one}}">
+	<input type="hidden" name="two" class="two" value="{{two}}">
+	<input type="hidden" name="three" class="three" value="{{three}}">
+	<input type="hidden" name="four" class="four" value="{{four}}">
 	{% endfor %}
 	{% for p_age,p_count in patient_count%}
 	<input type="hidden" name="p_age" class="p_age" value="{{p_age}}">
@@ -285,7 +350,7 @@ $(function(){
 					<h4 class="card-title">수익</h4>
 				</div>
 				<div class="card-body">
-					<div id="morrisArea"></div>
+					<div id="seasonData"></div>
 				</div>
 			</div>
 		<!-- /Sales Chart -->
