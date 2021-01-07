@@ -25,7 +25,7 @@ SECRET_KEY = 'kp5rakomqg64g-h+_=n&h9975h3wl=83goxio*$oukr33=40u('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.0.87','localhost']
 
 # ajax
 CORS_ORIGIN_ALLOW_ALL = True
@@ -97,6 +97,11 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries':{
+                'index': 'drLink.index',
+
+            }
+
         },
     },
 ]

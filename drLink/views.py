@@ -15,13 +15,45 @@ def home(request):
         appointment_result = getAppointmentList(1,number_page) # [[doctor_num, d_name, d_photo, dep_name, patient_num, p_name, p_photo, appointment_num, appointment_date, appointment_time, reg_date], ...]
         doctorList_result = getDoctorList(1,5)  # [[doctor_num, d_name, d_photo, b.dep_name, d_phone_num, d_email, d_regdate, retire_date,count] ...]
         patientListresult = getPatientList(1,5)
+
+        #차트
         newChart = getNewChart()
         sum_price = getSumPrice()
         patient_count = getPatientCount()
         gender = getGender()
         priceChart=getPriceChart()
         seosonPrice=getSeasonPrice()
-        return render(request, "drLink/index.html",{'seosonPrice':seosonPrice,'priceChart':priceChart,'gender':gender,'newChart':newChart,'appointmentList':appointment_result,'doctorList':doctorList_result,'patientList':patientListresult,'sum_price':sum_price,'patient_count':patient_count})
+
+        lastAppointment = []
+        patient_type=[]
+        ap_p_num =[]
+        patient_num=[]
+        p_num = getPatient_num()
+        patient_sumprice=[]
+        d_num=[]
+        reviewAvg=[]
+        for a in appointment_result:
+            ap_p_num.append(a[4])
+        for i,a in enumerate(ap_p_num):
+            patient_type.append(getPatientType(a)[0])
+
+        for a in patientListresult:
+            patient_num.append(a[10])
+        for i,a in enumerate(patient_num):
+            patient_sumprice.append(getPatientSumPrice(a)[0])
+
+        for a in doctorList_result:
+            d_num.append(a[0])
+        for i,a in enumerate(d_num):
+            if getReviewAVG(a)== None:
+                reviewAvg.append(0)
+            else:
+                reviewAvg.append(getReviewAVG(a)[0])
+        print(d_num)
+        print(reviewAvg)
+        for i in p_num:
+            lastAppointment.append(getAPLatest(i[0])[0])
+        return render(request, "drLink/index.html",{'reviewAvg':reviewAvg,'patient_sumprice':patient_sumprice,'patient_type':patient_type,'lastAppointment':lastAppointment,'seosonPrice':seosonPrice,'priceChart':priceChart,'gender':gender,'newChart':newChart,'appointmentList':appointment_result,'doctorList':doctorList_result,'patientList':patientListresult,'sum_price':sum_price,'patient_count':patient_count})
 
     return render(request, "drLink/login.html")
 
@@ -68,6 +100,7 @@ def appointment_list(request):
         appointmentList = getAppointmentList(1, number_page)
     page_num = math.ceil(appointmentList[0][11]/number_page)
     page_num = [i for i in range(1, page_num+1)]
+
     return render(request, "drLink/appointment_list.html", {'appointmentList':appointmentList, 'p_num':page_num})
 
 def blog_details(request):
@@ -490,4 +523,3 @@ def faq_details(request):
 
 def edit_faq_board(request):
     return render(request, '/drLink/edit_faq_board.html')
-

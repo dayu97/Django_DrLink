@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load humanize %}
+{% load index %}
 {% block content %}
 
 <style>
@@ -256,6 +257,37 @@ $(function(){
 		</div>
 	</div>
 
+
+	<div class="row">
+		<div class="col-md-12 col-lg-6">
+
+		<!-- Sales Chart -->
+			<div class="card card-chart">
+				<div class="card-header">
+					<h4 class="card-title">수익</h4>
+				</div>
+				<div class="card-body">
+					<div id="seasonData"></div>
+				</div>
+			</div>
+		<!-- /Sales Chart -->
+
+		</div>
+	<div class="col-md-12 col-lg-6">
+
+	<!-- Invoice Chart -->
+	<div class="card card-chart">
+		<div class="card-header">
+			<h4 class="card-title">고객 현황</h4>
+		</div>
+		<div class="card-body">
+			<div id="morrisLine"></div>
+		</div>
+	</div>
+	<!-- /Invoice Chart -->
+
+	</div>
+	</div>
 	<div class="row" >
 		<div class="col-xl-3 col-sm-6 col-12">
 			<div class="card">
@@ -341,36 +373,6 @@ $(function(){
 			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-md-12 col-lg-6">
-
-		<!-- Sales Chart -->
-			<div class="card card-chart">
-				<div class="card-header">
-					<h4 class="card-title">수익</h4>
-				</div>
-				<div class="card-body">
-					<div id="seasonData"></div>
-				</div>
-			</div>
-		<!-- /Sales Chart -->
-
-		</div>
-	<div class="col-md-12 col-lg-6">
-
-	<!-- Invoice Chart -->
-	<div class="card card-chart">
-		<div class="card-header">
-			<h4 class="card-title">고객 현황</h4>
-		</div>
-		<div class="card-body">
-			<div id="morrisLine"></div>
-		</div>
-	</div>
-	<!-- /Invoice Chart -->
-
-	</div>
-	</div>
 
 
 <!-- Recent Orders -->
@@ -408,10 +410,15 @@ $(function(){
 							<td>{{appointment.3}}</td>
 							<td>{{ appointment.8|slice:"0:4" }}년 {{ appointment.8|slice:"5:7" }}월 {{ appointment.8|slice:"8:10" }}일 <span class="text-primary d-block">{{appointment.9}}</span></td>
 							<td>
-								<div class="status-toggle">
+								{% if patient_type|index:forloop.counter0 != none %}
+									<span class="badge badge-pill bg-success inv-badge">기존</span>
+								{% else %}
+									<span class="badge badge-pill bg-danger inv-badge">신규</span>
+								{% endif %}
+								<!--<div class="status-toggle">
 									<input type="checkbox" id="status_1" class="check" checked>
 									<label for="status_1" class="checktoggle">checkbox</label>
-								</div>
+								</div>-->
 							</td>
 						</tr>
 					{% endfor %}
@@ -453,15 +460,15 @@ $(function(){
 										</h2>
 									</td>
 									<td>{{doctor.3}}</td>
-									<td>{{doctor.8}}</td>
+									<td>{{doctor.9}}</td>
 									<td>
-										<!--{% for i in '01234'|make_list %}
-											{% if review.4 > forloop.counter0 %}
+										{% for i in '01234'|make_list %}
+											{% if reviewAvg.0 > forloop.counter0 %}
 												<i class="fe fe-star text-warning"></i>
 											{% else %}
 												<i class="fe fe-star-o text-secondary"></i>
 											{% endif %}
-										{% endfor %}-->
+										{% endfor %}
 									</td>
 								</tr>
 
@@ -503,8 +510,9 @@ $(function(){
 										</h2>
 									</td>
 									<td>{{ patient.7|slice:"0:3" }}-{{ patient.7|slice:"3:7" }}-{{ patient.7|slice:"7:11" }}</td>
-									<td>20 Oct 2019</td>
-									<td class="text-right">$100.00</td>
+									<td>{{lastAppointment|index:forloop.counter0}}</td>
+
+									<td>￦ {{patient_sumprice|index:forloop.counter0|intcomma}}</td>
 								</tr>
 								{% endfor %}
 							</tbody>

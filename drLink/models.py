@@ -17,6 +17,60 @@ def LoginCheck(id, pwd):
     conn.close()
     return re
 
+def getPatient_num():
+    conn = ora.connect(database)
+    cursor = conn.cursor()
+    sql="select distinct patient_num from appointment order by patient_num"
+    cursor.execute(sql)
+    re = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return re
+
+def getPatientType(p_num):
+    conn = ora.connect(database)
+    cursor = conn.cursor()
+    sql = "SELECT DECODE(count(patient_num),1,'','기존') AS TYPE FROM prescription where patient_num={} group by patient_num".format(p_num)
+    cursor.execute(sql)
+    re = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return re
+
+def getPatientSumPrice(p_num):
+    conn = ora.connect(database)
+    cursor = conn.cursor()
+    sql = "select nvl(sum(price),'0') from payment_record where patient_num ={}".format(p_num)
+    cursor.execute(sql)
+    re = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return re
+
+def getReviewAVG(d_num):
+    conn = ora.connect(database)
+    cursor = conn.cursor()
+    sql = "select round(avg(review_rating),0) as rating from doc_review where doctor_num={} group by doctor_num".format(d_num)
+    cursor.execute(sql)
+    re = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return re
+
+
+
+def getAPLatest(p_num):
+    conn = ora.connect(database)
+    cursor = conn.cursor()
+    sql = "select a.appointment_date from(select * from appointment where patient_num = {} order by appointment_num desc) a where rownum = 1".format(p_num)
+    cursor.execute(sql)
+    re = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return re
+
+
+
 def getSumPrice() :
     conn = ora.connect(database)
     cursor = conn.cursor()
@@ -40,6 +94,8 @@ def getSeasonPrice():
     cursor.close()
     conn.close()
     return re
+
+
 
 def getPriceChart():
     conn = ora.connect(database)

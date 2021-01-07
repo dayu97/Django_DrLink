@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+
 <div class="content container-fluid">
 
 <!-- Page Header -->
@@ -17,12 +18,20 @@
 <!-- /Page Header -->
 <div class="row">
 	<div class="col-md-12">
-
 		<!-- Recent Orders -->
 		<div class="card">
 			<div class="card-body">
+				<!--<nav class="navbar navbar-expand-lg navbar-light bg-light">
+				  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<form class="form-inline my-2 my-lg-0"  action="appointment_list" >
+						{% csrf_token %}
+					  <input class="search form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search" name="search_keyword" value="{{search_keyword|default_if_none:'' }}">
+					  <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="searchbtn">Search</button>
+					</form>
+				  </div>
+				</nav>-->
 				<div class="table-responsive">
-					<table class="datatable table table-hover table-center mb-0">
+					<table class="table table-striped table-bordered datatable table-center mb-0" id="appoinment_table">
 						<thead>
 							<tr>
 								<th class="text-center">예약번호</th>
