@@ -208,6 +208,34 @@ def ai_female_fav():
     cursor.close()
     conn.close()
     return re
+#작년 수익 : 김다유
+def lastyear():
+    conn = ora.connect(database)
+    cursor = conn.cursor()
+    sql="select  to_char(extract(year from sysdate)-1)," \
+        "nvl((select sum(price) from payment_record where to_char(extract(year from sysdate)-1) = to_char(paydate,'yyyy') and to_char(paydate,'q')=to_char(sysdate,'q')),0)," \
+        "nvl((select sum(price) from payment_record where to_char(extract(year from sysdate)-1) = to_char(paydate,'yyyy') and to_char(paydate,'q')=to_char(sysdate,'q')+1),0)," \
+        "nvl((select sum(price) from payment_record where to_char(extract(year from sysdate)-1) = to_char(paydate,'yyyy') and to_char(paydate,'q')=to_char(sysdate,'q')+2),0)," \
+        "nvl((select sum(price) from payment_record where to_char(extract(year from sysdate)-1) = to_char(paydate,'yyyy') and to_char(paydate,'q')=to_char(sysdate,'q')+3),0) from dual "
+    cursor.execute(sql)
+    re = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return re
+#재작년 수익 : 김다유
+def twoyear():
+    conn = ora.connect(database)
+    cursor = conn.cursor()
+    sql="select  to_char(extract(year from sysdate)-2)," \
+        "nvl((select sum(price) from payment_record where to_char(extract(year from sysdate)-2) = to_char(paydate,'yyyy') and to_char(paydate,'q')=to_char(sysdate,'q')),0)," \
+        "nvl((select sum(price) from payment_record where to_char(extract(year from sysdate)-2) = to_char(paydate,'yyyy') and to_char(paydate,'q')=to_char(sysdate,'q')+1),0)," \
+        "nvl((select sum(price) from payment_record where to_char(extract(year from sysdate)-2) = to_char(paydate,'yyyy') and to_char(paydate,'q')=to_char(sysdate,'q')+2),0)," \
+        "nvl((select sum(price) from payment_record where to_char(extract(year from sysdate)-2) = to_char(paydate,'yyyy') and to_char(paydate,'q')=to_char(sysdate,'q')+3),0) from dual  "
+    cursor.execute(sql)
+    re = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return re
 
 
 #2020-12-29 송은

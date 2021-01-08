@@ -8,7 +8,8 @@ from django.views.decorators.csrf import csrf_protect
 from django.http import HttpResponse, JsonResponse
 import json
 import math
-
+from django.contrib import messages
+from django.db.models import Q
 from django.http import JsonResponse, HttpResponse
 import pandas as pd
 import numpy as np
@@ -99,6 +100,8 @@ def home(request):
         aiGenderFav = ai_gender_fav()
         aiFemaleFav = ai_female_fav()
         aiMaleFav = ai_male_fav()
+        last_year = lastyear()
+        two_year = twoyear()
         lastAppointment = []
         patient_type=[]
         ap_p_num =[]
@@ -126,22 +129,45 @@ def home(request):
                 reviewAvg.append(getReviewAVG(a)[0])
         for i in p_num:
             lastAppointment.append(getAPLatest(i[0])[0])
-
-        print('aiFemaleFav' , aiFemaleFav)
-        print('aiMaleFav' , aiMaleFav)
-        return render(request, "drLink/index.html",{'aiMaleFav':aiMaleFav,'aiFemaleFav':aiFemaleFav,'aiGenderFav':aiGenderFav,'gender':gender,'reviewAvg':reviewAvg,'patient_sumprice':patient_sumprice,'patient_type':patient_type,'lastAppointment':lastAppointment,'seosonPrice':seosonPrice,'priceChart':priceChart,'newChart':newChart,'appointmentList':appointment_result,'doctorList':doctorList_result,'patientList':patientListresult,'sum_price':sum_price,'patient_count':patient_count})
+        return render(request, "drLink/index.html",{'twoyear':two_year,'lastyear':last_year,'aiMaleFav':aiMaleFav,'aiFemaleFav':aiFemaleFav,
+                                                    'aiGenderFav':aiGenderFav,'gender':gender,'reviewAvg':reviewAvg,'patient_sumprice':patient_sumprice,
+                                                    'patient_type':patient_type,'lastAppointment':lastAppointment,'seosonPrice':seosonPrice,'priceChart':priceChart,
+                                                    'newChart':newChart,'appointmentList':appointment_result,'doctorList':doctorList_result,'patientList':patientListresult,
+                                                    'sum_price':sum_price,'patient_count':patient_count})
 
     return render(request, "drLink/login.html")
 
 
 @csrf_exempt
 def insertAuthNumber(request):
-    print("insertAuthNumber 요청")
     auth_number = auth_num()
     print('발급 된 인증번호 입니다. : ',auth_number)
     result = {'success' : auth_number}
     return JsonResponse(result)
 
+def search_appointment_list(request):
+    search_keyword = request.GET.get('search_keyword', '')
+    search_type = self.request.GET.get('type', '')
+    if search_keyword:
+        if len(search_keyword) > 1:
+            if search_type == 'all':
+                search_notice_list = notice_list.filter(
+                    Q(title__icontains=search_keyword) | Q(content__icontains=search_keyword) | Q(
+                        writer__user_id__icontains=search_keyword))
+            elif search_type == 'title_content':
+                search_notice_list = notice_list.filter(
+                    Q(title__icontains=search_keyword) | Q(content__icontains=search_keyword))
+            elif search_type == 'title':
+                search_notice_list = notice_list.filter(title__icontains=search_keyword)
+            elif search_type == 'content':
+                search_notice_list = notice_list.filter(content__icontains=search_keyword)
+            elif search_type == 'writer':
+                search_notice_list = notice_list.filter(writer__user_id__icontains=search_keyword)
+
+            return search_notice_list
+        else:
+            messages.error(self.request, '검색어는 2글자 이상 입력해주세요.')
+    return
 
 def goLogin(request):
     if 'id' in request.session: #이미 로그인상태
