@@ -2,13 +2,113 @@
 {% block content %}
 <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script>
-	$(document).ready(function(){
+$(document).ready(function(){
 		// 삭제버튼
 		$('.btn.btn-sm.bg-danger-light').click(function(){
 			var index = $(this).closest('tr').index();
 			$('.doctor_num').val($('tbody > tr:eq('+index+')').find('td:eq(0)').find('span').text());
 		});
-	});
+
+		$('.get_auth_num').click(function(){
+			$.ajax({
+				type:'post',
+				url:'insertAuthNumber',
+				dataType : 'json',
+				success : function(data){
+					$(".auth_check").html('인증번호 : '+data.success);
+					$('.auth_check').css('color', 'red');
+				}
+			});//ajax
+		});//클릭버튼
+
+		$('.doctorTable tr:eq(0) th').click(function(){
+				alert('클릭')
+				var thisThObj = $(this);//이때 this는 클릭한 th 의미
+
+
+				var ascDesc = "";
+
+				thisThObj.siblings().each(function(){
+					var txt = $(this).text();
+					txt = $.trim(txt);
+					txt = txt.replace("▲","");
+					txt = txt.replace("▼","");
+					$(this).text(txt);
+
+					});
+
+				var txt = thisThObj.text();
+
+				if (txt.indexOf("▲")>=0){
+					txt = txt.replace("▲","▼");
+					ascDesc = "desc";
+				}
+
+				 else if ( txt.indexOf("▼")>=0 ){
+					txt = txt.replace("▼","▲");
+					ascDesc = "asc";
+				 }
+
+				else{
+					txt = txt+"▲";
+					ascDesc = "asc";
+				}
+
+				thisThObj.text(txt);
+				var allTrObj = $('.doctorTable tbody:eq(0)').children();
+				var trObjs=[];
+
+				allTrObj.each( function(){
+					trObjs.push( $(this) );
+				});
+
+				var thIndex = thisThObj.index();
+
+				for ( var j=0 ; j<trObjs.length-1 ; j++ ){
+					for ( var k=j+1 ; k<trObjs.length ; k++){
+
+						var td1Text = trObjs[j].children('td').eq(thIndex).text();
+						td1Text = ($.trim(td1Text)).toLowerCase();
+
+						if (thIndex==2){ td1Text = parseInt(td1Text,10); }
+
+						//k번째 jQuery 객체의 관리 tr 의 x번째 열의 문자 얻고 공백제거하고 소문자로 바꾸기
+						var td2Text = trObjs[k].children('td').eq(thIndex).text();
+						td2Text = ($.trim(td2Text)).toLowerCase();
+						if (thIndex==2){ td2Text = parseInt(td2Text,10); }
+
+						//만약 내림차순 의도가 있고 [j번째 x번째 열의 문자]<[k번째 x번째 열의 문자] 이면
+						//j번째 jQuery객체와 k번째 jQuery 객체의 위치 바꾸기
+						if (ascDesc=="desc" && td1Text<td2Text){
+							var tmp = trObjs[j];
+							trObjs[j] = trObjs[k];
+							trObjs[k] = tmp;
+						}
+
+						//만약 오름차순 의도가 있고 [j번째 x번째 열의 문자]>[k번째 x번째 열의 문자] 이면
+						//j번째 jQuery객체와 k번째 jQuery 객체의 위치 바꾸기
+						else if (ascDesc=="asc" && td1Text>td2Text){
+							var tmp = trObjs[j];
+							trObjs[j] = trObjs[k];
+							trObjs[k] = tmp;
+						}
+
+					}
+				}
+
+				//기존 tr태그 지우기
+				$('.doctorTable tbody:eq(0)').empty();
+
+				//Array 객체에 저장된 jQeury 객체가 관리하는 tr 태그를 삽입하기
+				for ( var j=0 ; j<trObjs.length ; j++ ){
+					$('.doctorTable tbody:eq(0)').append( trObjs[j] );
+				}
+
+			});
+
+});
+
+
 
 </script>
 <div class="content container-fluid">
@@ -31,17 +131,27 @@
 	<div class="col-sm-12">
 		<div class="card">
 			<div class="card-body">
+				<nav class="navbar navbar-expand-lg navbar-light bg-light">
+				  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+						{% csrf_token %}
+						<a  data-toggle="modal" href="#auth_number_modal" class="btn btn-outline-success my-2 my-sm-0">
+							회원 가입 인증번호 발급하기
+						</a>
+					  <div class="auth_check"></div>
+				  </div>
+				</nav>
+
 				<div class="table-responsive">
-					<table class="datatable table table-hover table-center mb-0">
+					<table class="datatable table table-hover table-center mb-0 doctorTable">
 						<thead>
 							<tr>
-								<th class="text-center">No</th>
-								<th class="text-center">의사이름</th>
-								<th class="text-center">진료과목</th>
-								<th class="text-center">입사일</th>
-								<th class="text-center">연락처</th>
-								<th class="text-center">상태</th>
-								<th class="text-center"></th>
+								<th class="text-center" style="cursor:pointer" >No</th>
+								<th class="text-center" style="cursor:pointer" >의사이름</th>
+								<th class="text-center" style="cursor:pointer" >진료과목</th>
+								<th class="text-center" style="cursor:pointer" >입사일</th>
+								<th class="text-center" style="cursor:pointer" >연락처</th>
+								<th class="text-center" style="cursor:pointer" >상태</th>
+								<th class="text-center" style="cursor:pointer" ></th>
 
 							</tr>
 						</thead>
@@ -169,4 +279,27 @@
 </div>
 </div>
 <!-- /Delete Modal -->
+
+<!-- auth_number_modal -->
+<div class="modal fade" id="auth_number_modal" aria-hidden="true" role="dialog">
+<div class="modal-dialog modal-dialog-centered" role="document" >
+<div class="modal-content">
+	<div class="modal-body">
+		<div class="form-content p-2" style="text-align: center;">
+			<h4 class="modal-title">회원가입 인증번호 발급</h4>
+			<p class="mb-4">⏳인증번호 제한 시간은 5분 입니다.</p>
+			<form method="post">
+				{% csrf_token %}
+				<input type="button" class="btn btn-primary get_auth_num" value="발급하기">
+				<button type="button" class="btn btn-danger" data-dismiss="modal">취소하기</button>
+			</form>
+		</div>
+		<div id="auth_num_chk">
+			{{auth_num_chk}}
+		</div>
+	</div>
+</div>
+</div>
+</div>
+<!-- /auth_number_modal -->
 {% endblock content %}

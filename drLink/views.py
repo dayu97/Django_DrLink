@@ -9,6 +9,71 @@ from django.http import HttpResponse, JsonResponse
 import json
 import math
 
+from django.http import JsonResponse, HttpResponse
+import pandas as pd
+import numpy as np
+import joblib
+import pickle
+from tensorflow.keras.models import load_model
+import requests
+from bs4 import BeautifulSoup
+from PIL import Image
+import os, glob, numpy as np
+from tensorflow.python.keras.models import load_model
+import tensorflow as tf
+from sklearn import utils
+from sklearn.preprocessing import StandardScaler
+# Create your views here.
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from tensorflow.compat.v2.keras.models import model_from_json
+from wordcloud import wordcloud, WordCloud
+from collections import Counter
+import matplotlib.pyplot as plt
+
+
+def jsonAIT(request):   # spring 연동
+    jsonCall = request.GET.get("callback")
+    jsonData = request.GET.get("img")
+    # model.json 파일 열기
+    json_file = open("/home/kosmo1/notedir/work1127/eyes_model.json", "r")
+    origindir = "/home/kosmo1/notedir/work1127/Modeltrain/eyeTest"
+    categories = os.listdir(origindir)
+    loaded_model_json = json_file.read()
+    json_file.close()
+    # json파일로부터 model 로드하기
+    loaded_model = model_from_json(loaded_model_json)
+    # 로드한 model에 weight 로드하기
+    loaded_model.load_weights("/home/kosmo1/notedir/work1127/eyes_model.h5")
+    loaded_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    seed = 5
+    tf.compat.v1.set_random_seed(seed)
+    np.random.seed(seed)
+    img_w = 64
+    img_h = 64
+    img_file = "/home/kosmo1/share/aiTest/{}".format(jsonData)
+    #x_test = []
+    img = Image.open(img_file)
+    img = img.convert("RGB")
+    img = img.resize((img_w, img_h))
+    data = np.asarray(img)
+    data = [data]
+    #x_test.append(data)
+    X = np.array(data)
+    X = X.astype(float) / 255
+    prediction = loaded_model.predict(X)
+    print("prediction :",prediction)
+    predict = int(prediction[0][np.argmax(prediction)] * 100)
+    j_file = {'predict': predict, 'disease': categories[np.argmax(prediction)]}
+    if jsonCall:
+        response = HttpResponse("%s(%s);" % (jsonCall, json.dumps(j_file,ensure_ascii=False)))
+        response["Content-type"] = "text/javascript; charset=utf-8"
+    else:
+        response = HttpResponse(json.dumps(j_file,ensure_ascii=False))
+        response["Content-type"] = "application/json; charset=utf-8"
+    # callback + "(" + result + ")"    callback + "("+ result +")"
+    # return HttpResponse(json.dumps(aa), content_type='application/json', safe=False)
+    return response
+
 def home(request):
     if 'id' in request.session: #이미 로그인상태
         number_page = 10
@@ -20,10 +85,20 @@ def home(request):
         newChart = getNewChart()
         sum_price = getSumPrice()
         patient_count = getPatientCount()
-        gender = getGender()
+        ##########################
+        # data = getGender()
+        # data = pd.DataFrame(data, columns=['gender'])
+        # female = data[data['gender'] == '2'].count()
+        # male = data[data['gender'] == '1'].count()
+        # gender = pd.concat([female, male], axis=1)
+        # print(gender.iloc[0])
+        ##########################
+        gender=getGender()
         priceChart=getPriceChart()
         seosonPrice=getSeasonPrice()
-
+        aiGenderFav = ai_gender_fav()
+        aiFemaleFav = ai_female_fav()
+        aiMaleFav = ai_male_fav()
         lastAppointment = []
         patient_type=[]
         ap_p_num =[]
@@ -49,13 +124,24 @@ def home(request):
                 reviewAvg.append(0)
             else:
                 reviewAvg.append(getReviewAVG(a)[0])
-        print(d_num)
-        print(reviewAvg)
         for i in p_num:
             lastAppointment.append(getAPLatest(i[0])[0])
-        return render(request, "drLink/index.html",{'reviewAvg':reviewAvg,'patient_sumprice':patient_sumprice,'patient_type':patient_type,'lastAppointment':lastAppointment,'seosonPrice':seosonPrice,'priceChart':priceChart,'gender':gender,'newChart':newChart,'appointmentList':appointment_result,'doctorList':doctorList_result,'patientList':patientListresult,'sum_price':sum_price,'patient_count':patient_count})
+
+        print('aiFemaleFav' , aiFemaleFav)
+        print('aiMaleFav' , aiMaleFav)
+        return render(request, "drLink/index.html",{'aiMaleFav':aiMaleFav,'aiFemaleFav':aiFemaleFav,'aiGenderFav':aiGenderFav,'gender':gender,'reviewAvg':reviewAvg,'patient_sumprice':patient_sumprice,'patient_type':patient_type,'lastAppointment':lastAppointment,'seosonPrice':seosonPrice,'priceChart':priceChart,'newChart':newChart,'appointmentList':appointment_result,'doctorList':doctorList_result,'patientList':patientListresult,'sum_price':sum_price,'patient_count':patient_count})
 
     return render(request, "drLink/login.html")
+
+
+@csrf_exempt
+def insertAuthNumber(request):
+    print("insertAuthNumber 요청")
+    auth_number = auth_num()
+    print('발급 된 인증번호 입니다. : ',auth_number)
+    result = {'success' : auth_number}
+    return JsonResponse(result)
+
 
 def goLogin(request):
     if 'id' in request.session: #이미 로그인상태
@@ -122,7 +208,6 @@ def doctor_list(request):
         doctorList = getDoctorList(1, number_page)
     page_num = math.ceil(doctorList[0][10] / number_page)
     page_num = [i for i in range(1, page_num + 1)]
-    print(page_num)
     return render(request, "drLink/doctor_list.html", {'doctorList': doctorList, 'p_num': page_num})
 
 def edit_blog(request):
@@ -182,7 +267,6 @@ def reviews(request):
         result = getReviewList(1, number_page)
     page_num = math.ceil(result[0][9] / number_page)
     page_num = [i for i in range(1, page_num+1)]
-    print(result)
     return render(request, "drLink/reviews.html", {'reviewList':result,'p_num':page_num})
 
 #2020-12-29 송은
@@ -192,7 +276,6 @@ def specialities(request):
 
     result = getSpecialitiesList() # [[dep_num, dep_name], ...]
     doctorList_result = getDoctorList(1, 100)
-    print(doctorList_result[0][4])
     return render(request, "drLink/specialities.html",{'specialities':result,'doctorList':doctorList_result})
 
 def transactions_list(request):
@@ -243,9 +326,7 @@ def deleteDoctor(request):
 def doctor_profile(request):
     if 'id' not in request.session: #로그인 필터
         return redirect("/drLink")
-    print("request.GET['doctor_num']: ", request.GET['doctor_num'])
     result = getDoctorInfo(request.GET['doctor_num'])
-    print("result ",result[12])
     graduation = result[12].split(',')
     career = result[13].split(',')
     gg = []
@@ -320,7 +401,6 @@ def notice_details(request):
         return redirect("/drLink")
     h_num = request.GET['h_num']
     h_detail = getH_board_details(h_num)
-    print(h_detail)
     return render(request, "drLink/notice_details.html", {'h_detail':h_detail})
 
 def delete_notice_board(request):
@@ -355,7 +435,6 @@ def health_blog_details(request):
     if 'id' not in request.session: #로그인 필터
         return redirect("/drLink")
     n_num = request.GET['n_num']
-    print("건강정보 detail=", n_num)
     n_detail = getN_board_details(n_num)
     n_r = getN_replList(n_num)
     return render(request, "drLink/health_blog_details.html" , {'n_detail': n_detail, 'n_repl':n_r})
@@ -364,7 +443,6 @@ def delete_health_board(request):
     if 'id' not in request.session: #로그인 필터
         return redirect("/drLink")
     n_num = request.GET['n_num']
-    print("delete_health_board 요청: ",n_num)
     delete_healthBoard(n_num)
     return redirect('/drLink/health_info')
 
@@ -436,7 +514,6 @@ def delete_repl(request):
     if 'id' not in request.session: #로그인 필터
         return redirect("/drLink")
     repl = {'news_reply_num':  request.GET['repl_num'], 'news_board_num':  request.GET['news_board_num'] }
-    print(repl)
     del_repl(repl)
     return redirect("/drLink/health_blog_details?n_num="+repl['news_board_num'])
 
@@ -493,14 +570,10 @@ def update_health_board(request):
 @csrf_protect
 def pw_chk(request):
     pw = request.POST['chk_pwd']
-    print("들어온:",pw)
     chk = pwd_chk()
-    print("받아온",chk)
     if pw == chk[0]:
-        print("if 일치")
         pwdC = "등록한 비밀번호와 일치"
     else:
-        print("else 불일치")
         pwdC = None
     result = {
         'result': 'success',

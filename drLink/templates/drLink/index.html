@@ -31,7 +31,7 @@ $(function(){
 			columns: [
 				['의사', {{newChart.0}}],
 				['환자', {{newChart.1}}],
-				['예약', {{newChart.2}}]
+				['예약', {{newChart.2}}],
 			],
 			axes: {
 				예약: 'y2'
@@ -64,7 +64,6 @@ $(function(){
 	for(var i = 0 ; i<len ; i++){
 		linedata.push([$('input[name=week]').eq(i).val(),$('input[name=mon]').eq(i).val(),$('input[name=tue]').eq(i).val(),$('input[name=wed]').eq(i).val(),$('input[name=thu]').eq(i).val(),$('input[name=fri]').eq(i).val()]);
 	}
-	console.log(linedata)
 	var lineChart = c3.generate({
 		bindto: '#linechart',
 		data: {
@@ -157,6 +156,36 @@ $(function(){
     }
 	});//차트함수
 
+	var ai_f_chart=[];
+	var ai_m_chart=[];
+	ai_f_chart.push(['여자',$('input[name=f_model]').val()]);
+	ai_f_chart.push([$('input[name=f_cnt]').val()]);
+	ai_m_chart.push(['남자',$('input[name=m_model]').val()]);
+	ai_m_chart.push([$('input[name=m_cnt]').val()]);
+
+
+	var ai_female=[];
+	var len = $('input[name=f_Cmodel]').length;
+	for(var i = 0 ; i<len ; i++){
+		ai_female.push([$('input[name=f_Cmodel]').eq(i).val(),$('input[name=f_Ccnt]').eq(i).val()]);
+	}
+	var ai_male=[];
+	var len = $('input[name=m_Cmodel]').length;
+	for(var i = 0 ; i<len ; i++){
+		ai_male.push([$('input[name=m_Cmodel]').eq(i).val(),$('input[name=m_Ccnt]').eq(i).val()]);
+	}
+
+	var ai_gender_chart = c3.generate({
+		bindto:'#ai_chart',
+		data: {
+			columns: [ai_m_chart,ai_f_chart],
+			type : 'pie',
+		},
+    color: {
+        pattern: ['#1f77b4', '#aec7e8', '#ff7f0e', '#2ca02c', '#9467bd']
+    }
+	});//차트함수
+
 	var gender=[];
 	var len = $('input[name=gend_cnt]').length;
 	for(var i = 0 ; i<len ; i++){
@@ -172,6 +201,19 @@ $(function(){
 			pattern: ['#9edae5','#d62728','#c7c8c7', '#c49c94', '#9467bd', '#ff9896', '#c5b0d5', '#8c564b',  '#e377c2', '#f7b6d2', '#7f7f7f', '#bcbd22', '#dbdb8d', '#17becf', ]
 		}
 	});//차트함수
+
+	$('.maleChart').click(function(){
+		ai_gender_chart.unload();
+		ai_gender_chart.load({
+        	columns:ai_male
+   		});
+	});
+	$('.femaleChart').click(function(){
+		ai_gender_chart.unload();
+		ai_gender_chart.load({
+        	columns:ai_female
+   		});
+	});
 
 });//시작함수
 </script>
@@ -234,6 +276,20 @@ $(function(){
 	<input type="hidden" name="gend_cnt" class="gend_cnt" value="{{gend_cnt}}">
 	{% endfor %}
 
+	{% for f_Cmodel,f_Ccnt in aiFemaleFav%}
+	<input type="hidden" name="f_Cmodel" class="f_Cmodel" value="{{f_Cmodel}}">
+	<input type="hidden" name="f_Ccnt" class="f_Ccnt" value="{{f_Ccnt}}">
+	{% endfor %}
+	{% for m_Cmodel,m_Ccnt in aiMaleFav%}
+	<input type="hidden" name="m_Cmodel" class="m_Cmodel" value="{{m_Cmodel}}">
+	<input type="hidden" name="m_Ccnt" class="m_Ccnt" value="{{m_Ccnt}}">
+	{% endfor %}
+
+	<input type="hidden" name="f_model" class="f_model" value="{{aiGenderFav.0}}">
+	<input type="hidden" name="f_cnt" class="f_cnt" value="{{aiGenderFav.1}}">
+	<input type="hidden" name="m_model" class="m_model" value="{{aiGenderFav.2}}">
+	<input type="hidden" name="m_cnt" class="m_cnt" value="{{aiGenderFav.3}}">
+
 	<div class="row" style="justify-content: center; margin: 20px;">
 		<div class="col-md-12 col-lg-6">
 			<div class="card card-chart">
@@ -275,16 +331,16 @@ $(function(){
 		</div>
 	<div class="col-md-12 col-lg-6">
 
-	<!-- Invoice Chart -->
 	<div class="card card-chart">
 		<div class="card-header">
-			<h4 class="card-title">고객 현황</h4>
+			<h4 class="card-title" style="float: left;">AI 진단 현황</h4>
+			<button type="button" class="btn btn-link maleChart" onclick="" style="float: right;">남성별</button>
+			<button type="button" class="btn btn-link femaleChart" onclick="" style="float: right;">여성별</button>
 		</div>
 		<div class="card-body">
-			<div id="morrisLine"></div>
+			<div id="ai_chart"></div>
 		</div>
 	</div>
-	<!-- /Invoice Chart -->
 
 	</div>
 	</div>

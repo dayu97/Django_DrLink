@@ -1,5 +1,7 @@
 from django.db import models
 import cx_Oracle as ora
+import string
+import random
 # Create your models here.
 #database = 'final_dr/test00@192.168.0.44:1522/orcl1'
 # database = 'drLink/123@123.214.63.87:1521/orcl'
@@ -17,6 +19,23 @@ def LoginCheck(id, pwd):
     conn.close()
     return re
 
+#인증번호 생성 : 김다유
+def auth_num():
+    LENGTH = 8
+    string_pool = string.ascii_letters + string.digits
+    auth_num = ""
+    for i in range(LENGTH):
+        auth_num += random.choice(string_pool)
+    conn = ora.connect(database)
+    cursor = conn.cursor()
+    sql = "insert into doctor_verify values(auth_num_seq.nextval,:auth_num, 0)"
+    cursor.execute(sql, auth_num=auth_num)
+    cursor.close()
+    conn.commit()
+    conn.close()
+    return auth_num
+
+#환자 번호 출력 : 김다유
 def getPatient_num():
     conn = ora.connect(database)
     cursor = conn.cursor()
@@ -27,6 +46,7 @@ def getPatient_num():
     conn.close()
     return re
 
+#환자 구분 : 김다유
 def getPatientType(p_num):
     conn = ora.connect(database)
     cursor = conn.cursor()
@@ -37,6 +57,7 @@ def getPatientType(p_num):
     conn.close()
     return re
 
+#환자 결제 금액 : 김다유
 def getPatientSumPrice(p_num):
     conn = ora.connect(database)
     cursor = conn.cursor()
@@ -47,6 +68,7 @@ def getPatientSumPrice(p_num):
     conn.close()
     return re
 
+#의사 리뷰 평점 : 김다유
 def getReviewAVG(d_num):
     conn = ora.connect(database)
     cursor = conn.cursor()
@@ -56,7 +78,6 @@ def getReviewAVG(d_num):
     cursor.close()
     conn.close()
     return re
-
 
 
 def getAPLatest(p_num):
@@ -69,8 +90,7 @@ def getAPLatest(p_num):
     conn.close()
     return re
 
-
-
+#총 수익 : 김다유
 def getSumPrice() :
     conn = ora.connect(database)
     cursor = conn.cursor()
@@ -81,6 +101,7 @@ def getSumPrice() :
     conn.close()
     return re
 
+#분기별 수익 : 김다유
 def getSeasonPrice():
     conn = ora.connect(database)
     cursor = conn.cursor()
@@ -95,8 +116,7 @@ def getSeasonPrice():
     conn.close()
     return re
 
-
-
+#주간 수익 : 김다유
 def getPriceChart():
     conn = ora.connect(database)
     cursor = conn.cursor()
@@ -107,25 +127,25 @@ def getPriceChart():
    " ,nvl((select sum(price) from payment_record where TO_CHAR(paydate,'yy-mm-dd') = TO_CHAR(A.S_DATA +3 , 'yy-mm-dd') ), 0) "\
    " ,nvl((select sum(price) from payment_record where TO_CHAR(paydate,'yy-mm-dd') = TO_CHAR(A.S_DATA +4 , 'yy-mm-dd') ), 0) "\
    " FROM (SELECT SYSDATE - (TO_NUMBER(TO_CHAR(SYSDATE, 'd')) - 2) S_DATA FROM DUAL) A"
-    print("sql: ", sql)
     cursor.execute(sql)
     re = cursor.fetchall()
     cursor.close()
     conn.close()
-    print("re:: ",re)
     return re
 
+#성별 차트 : 김다유
 def getGender():
     conn = ora.connect(database)
     cursor = conn.cursor()
     sql = "select DECODE(p_gender, '1', '남자', '2', '여자') , count(case when p_gender = '1'then 1 when p_gender='2' then 0 end) as cnt from dl_user group by DECODE(p_gender, '1', '남자', '2', '여자')"
+    #sql="select p_gender from dl_user"
     cursor.execute(sql)
     re = cursor.fetchall()
     cursor.close()
     conn.close()
-    print(re)
     return re
 
+#환자 연령통계 : 김다유
 def getPatientCount() :
     conn = ora.connect(database)
     cursor = conn.cursor()
@@ -139,7 +159,7 @@ def getPatientCount() :
     conn.close()
     return re
 
-
+#신규데이터 통계 : 김다유
 def getNewChart():
     conn = ora.connect(database)
     cursor = conn.cursor()
@@ -151,6 +171,44 @@ def getNewChart():
     cursor.close()
     conn.close()
     return re
+
+#AI 통계 - 연령별 인기 순 : 김다유
+def ai_gender_fav():
+    conn = ora.connect(database)
+    cursor = conn.cursor()
+    sql="select * from (select nnn.* from (" \
+        "select ai_model, count(*) f_cnt from ai_record a join dl_user b on a.patient_num = b.patient_num where p_gender = '2' group by ai_model order by f_cnt) nnn " \
+        "where rownum = 1 ) female_model, ( select aaa.* from (" \
+        "select ai_model, count(*) m_cnt from ai_record a join dl_user b on a.patient_num = b.patient_num where p_gender = '1' group by ai_model order by m_cnt" \
+        ") aaa where rownum = 1 ) male_model  "
+    cursor.execute(sql)
+    re = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return re
+
+#AI 통계 - 남성별 인기 순 : 김다유
+def ai_male_fav():
+    conn = ora.connect(database)
+    cursor = conn.cursor()
+    sql="select ai_model, count(*) from ai_record a join dl_user b on a.patient_num = b.patient_num where p_gender = '1' group by ai_model  "
+    cursor.execute(sql)
+    re = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return re
+
+#AI 통계 - 여성별 인기 순 : 김다유
+def ai_female_fav():
+    conn = ora.connect(database)
+    cursor = conn.cursor()
+    sql="select ai_model, count(*) from ai_record a join dl_user b on a.patient_num = b.patient_num where p_gender = '2' group by ai_model "
+    cursor.execute(sql)
+    re = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return re
+
 
 #2020-12-29 송은
 #진료과목(department)
@@ -204,7 +262,7 @@ def getAppointmentList(p_num, number_page):
             " to_char(reg_date,'YYYY-MM-DD') ,(select count(*) from appointment where appointment_date > to_char(sysdate, 'yyyy-mm-dd')) as cnt,(select count(*) from appointment) as allcnt" \
             " from appointment a, dl_doctor b, dl_user c, department d " \
             " where a.doctor_num=b.doctor_num and a.patient_num=c.patient_num and b.dep_num=d.dep_num and appointment_date > to_char(sysdate, 'yyyy-mm-dd')"\
-            " order by appointment_date ) nnn ) nn where r_num between 1 and 10 order by appointment_date,appointment_time  "
+            " order by appointment_date ) nnn ) nn where r_num between 1 and 10 order by appointment_num  "
     else:
         start, end = p_num * number_page - 9, p_num * number_page
         sql = "select nn.* from ( select nnn.*, rownum r_num from ("\
@@ -212,7 +270,7 @@ def getAppointmentList(p_num, number_page):
             " to_char(reg_date,'YYYY-MM-DD') ,(select count(*) from appointment where appointment_date > to_char(sysdate, 'yyyy-mm-dd')) as cnt,(select count(*) from appointment) as allcnt"\
             " from appointment a, dl_doctor b, dl_user c, department d "\
             " where a.doctor_num=b.doctor_num and a.patient_num=c.patient_num and b.dep_num=d.dep_num and appointment_date > to_char(sysdate, 'yyyy-mm-dd')"\
-            " order by appointment_date ) nnn ) nn where r_num between {} and {} order by appointment_date,appointment_time  ".format(start, end)
+            " order by appointment_date ) nnn ) nn where r_num between {} and {} order by appointment_num ".format(start, end)
     try:
         cursor.execute(sql)
         n_boardList = cursor.fetchall()
@@ -233,13 +291,13 @@ def getDoctorList(p_num, number_page):
     if p_num == 1:
      sql = "select nn.* from ( select nnn.*, rownum r_num from (SELECT a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email, to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD'),count(c.doctor_num) as cnt, (select count(*) from dl_doctor) " \
           " FROM dl_doctor a LEFT JOIN appointment c ON a.doctor_num = c.doctor_num join department b on a.dep_num = b.dep_num " \
-          " GROUP BY a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email,to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD') order by to_char(d_regdate,'YYYY-MM-DD')) nnn ) nn "\
+          " GROUP BY a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email,to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD') order by doctor_num) nnn ) nn "\
           " where r_num between 1 and {} ".format(number_page)
     else:
         start, end = p_num * number_page-9, p_num * number_page
         sql = "select nn.* from ( select nnn.*, rownum r_num from (SELECT a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email, to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD'),count(c.doctor_num) as cnt, (select count(*) from dl_doctor) "\
           " FROM dl_doctor a LEFT JOIN appointment c ON a.doctor_num = c.doctor_num join department b on a.dep_num = b.dep_num "\
-          " GROUP BY a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email,to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD') order by to_char(d_regdate,'YYYY-MM-DD')) nnn ) nn "\
+          " GROUP BY a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email,to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD') order by doctor_num) nnn ) nn "\
           " where r_num between {} and {} ".format(start, end)
     try:
         cursor.execute(sql)
@@ -268,13 +326,13 @@ def getPatientList(p_num, number_page):
     if p_num == 1:
         sql = "select nn.* from ( select nnn.*, rownum r_num from "\
             " (select P_ID, P_EMAIL, P_NAME, P_PHOTO,EXTRACT(YEAR FROM SYSDATE)-(DECODE(SUBSTR(P_JUMIN_NUM,7,1),'1', '19','2','19','20') || SUBSTR(P_JUMIN_NUM,1,2)) +1, "\
-            " P_ADDRESS1, P_ADDRESS2, P_PHONE_NUM, p_retire_date, (select count(*) from dl_user), patient_num from dl_user order by p_regdate desc) nnn ) nn "\
+            " P_ADDRESS1, P_ADDRESS2, P_PHONE_NUM, p_retire_date, (select count(*) from dl_user), patient_num from dl_user order by patient_num desc) nnn ) nn "\
             " where r_num between 1 and {} ".format(number_page)
     else:
         start, end = p_num * number_page - 9, p_num * number_page
         sql = "select nn.* from ( select nnn.*, rownum r_num from "\
             " (select P_ID, P_EMAIL, P_NAME, P_PHOTO,EXTRACT(YEAR FROM SYSDATE)-(DECODE(SUBSTR(P_JUMIN_NUM,7,1),'1', '19','2','19','20') || SUBSTR(P_JUMIN_NUM,1,2)) +1, "\
-            " P_ADDRESS1, P_ADDRESS2, P_PHONE_NUM, p_retire_date, (select count(*) from dl_user), patient_num from dl_user order by p_regdate desc) nnn ) nn "\
+            " P_ADDRESS1, P_ADDRESS2, P_PHONE_NUM, p_retire_date, (select count(*) from dl_user), patient_num from dl_user order by patient_num desc) nnn ) nn "\
             " where r_num between {} and {} ".format(start, end)
     try:
         cursor.execute(sql)
@@ -352,13 +410,13 @@ def getTransactionsList(p_num, number_page):
         sql = "select nn.* from (select nnn.*, rownum r_num from (" \
               " select a.prescription_num,c.patient_num,c.p_name,d.d_photo,d.doctor_num,d.d_name,e.dep_name, a.prescription_date,a.price,b.paydate,a.payment_check,(select count(*) from prescription) as cnt" \
               " from prescription a, payment_record b, dl_user c, dl_doctor d, department e where b.prescription_num(+)=a.prescription_num" \
-              " and a.patient_num = c.patient_num and a.doctor_num = d.doctor_num and d.dep_num = e.dep_num order by a.prescription_date desc) nnn ) nn where r_num between 1 and {} ".format(number_page)
+              " and a.patient_num = c.patient_num and a.doctor_num = d.doctor_num and d.dep_num = e.dep_num order by a.prescription_num desc) nnn ) nn where r_num between 1 and {} ".format(number_page)
     else:
         start, end = p_num * number_page - 9, p_num * number_page
         sql = "select nn.* from (select nnn.*, rownum r_num from (" \
               " select a.prescription_num,c.patient_num,c.p_name,d.d_photo,d.doctor_num,d.d_name,e.dep_name, a.prescription_date,a.price,b.paydate,a.payment_check,(select count(*) from prescription) as cnt" \
               " from prescription a, payment_record b, dl_user c, dl_doctor d, department e where b.prescription_num(+)=a.prescription_num" \
-              " and a.patient_num = c.patient_num and a.doctor_num = d.doctor_num and d.dep_num = e.dep_num order by a.prescription_date desc) nnn ) nn where r_num between {} and {} ".format(start, end)
+              " and a.patient_num = c.patient_num and a.doctor_num = d.doctor_num and d.dep_num = e.dep_num order by a.prescription_num desc) nnn ) nn where r_num between {} and {} ".format(start, end)
     try:
         cursor.execute(sql)
         re = cursor.fetchall()

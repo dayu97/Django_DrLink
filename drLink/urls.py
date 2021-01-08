@@ -54,4 +54,6 @@ urlpatterns=[
     path('edit_faq_board', views.edit_notice_board),
     path('delete_repl', views.delete_repl),
     path('pw_chk', views.pw_chk),
+    path('jsonAIT', views.jsonAIT),
+    path('insertAuthNumber',views.insertAuthNumber),
 ];
