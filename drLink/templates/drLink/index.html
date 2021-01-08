@@ -178,7 +178,7 @@ $(function(){
 	var ai_gender_chart = c3.generate({
 		bindto:'#ai_chart',
 		data: {
-			columns: [ai_m_chart,ai_f_chart],
+			columns: ai_male,
 			type : 'pie',
 		},
     color: {
@@ -203,13 +203,13 @@ $(function(){
 	});//차트함수
 
 	$('.maleChart').click(function(){
-		ai_gender_chart.unload();
+		//ai_gender_chart.unload();
 		ai_gender_chart.load({
         	columns:ai_male
    		});
 	});
 	$('.femaleChart').click(function(){
-		ai_gender_chart.unload();
+		//ai_gender_chart.unload();
 		ai_gender_chart.load({
         	columns:ai_female
    		});
