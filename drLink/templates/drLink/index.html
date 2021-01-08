@@ -228,7 +228,7 @@ $(function(){
 	var two_year =[];
 	var len = $('input[name=twoyear]').length;
 	for(var i = 0 ; i<len ; i++){
-		seasonData.push([$('input[name=twoyear]').eq(i).val(),$('input[name=twoone]').eq(i).val(),$('input[name=twotwo]').eq(i).val(),$('input[name=twothree]').eq(i).val(),$('input[name=twofour]').eq(i).val()]);
+		two_year.push([$('input[name=twoyear]').eq(i).val(),$('input[name=twoone]').eq(i).val(),$('input[name=twotwo]').eq(i).val(),$('input[name=twothree]').eq(i).val(),$('input[name=twofour]').eq(i).val()]);
 	}
 	$('.twoyear').click(function(){
 		seasonData.load({

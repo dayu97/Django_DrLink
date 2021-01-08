@@ -145,29 +145,6 @@ def insertAuthNumber(request):
     result = {'success' : auth_number}
     return JsonResponse(result)
 
-def search_appointment_list(request):
-    search_keyword = request.GET.get('search_keyword', '')
-    search_type = self.request.GET.get('type', '')
-    if search_keyword:
-        if len(search_keyword) > 1:
-            if search_type == 'all':
-                search_notice_list = notice_list.filter(
-                    Q(title__icontains=search_keyword) | Q(content__icontains=search_keyword) | Q(
-                        writer__user_id__icontains=search_keyword))
-            elif search_type == 'title_content':
-                search_notice_list = notice_list.filter(
-                    Q(title__icontains=search_keyword) | Q(content__icontains=search_keyword))
-            elif search_type == 'title':
-                search_notice_list = notice_list.filter(title__icontains=search_keyword)
-            elif search_type == 'content':
-                search_notice_list = notice_list.filter(content__icontains=search_keyword)
-            elif search_type == 'writer':
-                search_notice_list = notice_list.filter(writer__user_id__icontains=search_keyword)
-
-            return search_notice_list
-        else:
-            messages.error(self.request, '검색어는 2글자 이상 입력해주세요.')
-    return
 
 def goLogin(request):
     if 'id' in request.session: #이미 로그인상태
@@ -212,8 +189,28 @@ def appointment_list(request):
         appointmentList = getAppointmentList(1, number_page)
     page_num = math.ceil(appointmentList[0][11]/number_page)
     page_num = [i for i in range(1, page_num+1)]
-
     return render(request, "drLink/appointment_list.html", {'appointmentList':appointmentList, 'p_num':page_num})
+
+def appointment_search_list(request):
+    if 'id' not in request.session:
+        return redirect("/drLink")
+    number_page = 10
+    search_keyword=request.POST['search_keyword']
+    type=request.POST['type']
+    try:
+        if request.GET['p_num'] != None:
+            appointment_search_list = getAppointmentSearchList(request.GET['p_num'], number_page,search_keyword,type)
+    except Exception as ex:
+        print(ex)
+        appointment_search_list = getAppointmentSearchList(1, number_page, search_keyword, type)
+        print("원래 페이지: ", len(appointment_search_list))
+
+    page_num = math.ceil(len(appointment_search_list)/ number_page)
+    page_num = [i for i in range(1, page_num + 1)]
+    return render(request, "drLink/appointment_list.html", {'appointment_search_list': appointment_search_list, 'search_p_num': page_num})
+
+
+
 
 def blog_details(request):
     if 'id' not in request.session: #로그인 필터
