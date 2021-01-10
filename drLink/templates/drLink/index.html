@@ -225,14 +225,14 @@ $(function(){
    		});
 	});
 
-	var two_year =[];
+	var thisyear =[];
 	var len = $('input[name=twoyear]').length;
 	for(var i = 0 ; i<len ; i++){
-		two_year.push([$('input[name=twoyear]').eq(i).val(),$('input[name=twoone]').eq(i).val(),$('input[name=twotwo]').eq(i).val(),$('input[name=twothree]').eq(i).val(),$('input[name=twofour]').eq(i).val()]);
+		thisyear.push([$('input[name=twoyear]').eq(i).val(),$('input[name=twoone]').eq(i).val(),$('input[name=twotwo]').eq(i).val(),$('input[name=twothree]').eq(i).val(),$('input[name=twofour]').eq(i).val()]);
 	}
-	$('.twoyear').click(function(){
+	$('.thisyear').click(function(){
 		seasonData.load({
-        	columns:two_year
+        	columns:seasonData
    		});
 	});
 
@@ -257,7 +257,7 @@ $(function(){
 			<div class="card card-chart">
 				<div class="card-header">
 					<h4 class="card-title"style="float: left;">수익</h4>
-					<button type="button" class="btn btn-link twoyear" onclick="" style="float: right;">재작년</button>
+					<button type="button" class="btn btn-link thisyear" onclick="" style="float: right;">올해</button>
 					<button type="button" class="btn btn-link lastyear" onclick="" style="float: right;">작년</button>
 				</div>
 				<div class="card-body">
@@ -559,7 +559,7 @@ $(function(){
 									<td>{{doctor.9}}</td>
 									<td>
 										{% for i in '01234'|make_list %}
-											{% if reviewAvg.0 > forloop.counter0 %}
+											{% if doctor.11 > forloop.counter0 %}
 												<i class="fe fe-star text-warning"></i>
 											{% else %}
 												<i class="fe fe-star-o text-secondary"></i>
@@ -567,7 +567,6 @@ $(function(){
 										{% endfor %}
 									</td>
 								</tr>
-
 							{% endfor %}
 							</tbody>
 						</table>

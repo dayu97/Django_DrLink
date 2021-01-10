@@ -372,16 +372,22 @@ def getDoctorList(p_num, number_page):
     cursor = conn.cursor()
     p_num = int(p_num)
     if p_num == 1:
-     sql = "select nn.* from ( select nnn.*, rownum r_num from (SELECT a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email, to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD'),count(c.doctor_num) as cnt, (select count(*) from dl_doctor) " \
-          " FROM dl_doctor a LEFT JOIN appointment c ON a.doctor_num = c.doctor_num join department b on a.dep_num = b.dep_num " \
-          " GROUP BY a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email,to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD') order by doctor_num) nnn ) nn "\
+     sql = "select nn.* from ( select nnn.*, rownum r_num from (SELECT a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email, " \
+           "to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD'),count(c.doctor_num) as cnt, (select count(*) from dl_doctor) " \
+           ",nvl(round(avg(review_rating),0),'0')" \
+           " FROM dl_doctor a LEFT JOIN appointment c ON a.doctor_num = c.doctor_num join department b on a.dep_num = b.dep_num left join doc_review e on a.doctor_num = e.doctor_num" \
+           " GROUP BY a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email,to_char(d_regdate,'YYYY-MM-DD'), " \
+           " to_char(d_retire_date,'YYYY-MM-DD') order by doctor_num ) nnn ) nn "\
           " where r_num between 1 and {} ".format(number_page)
     else:
         start, end = p_num * number_page-9, p_num * number_page
-        sql = "select nn.* from ( select nnn.*, rownum r_num from (SELECT a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email, to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD'),count(c.doctor_num) as cnt, (select count(*) from dl_doctor) "\
-          " FROM dl_doctor a LEFT JOIN appointment c ON a.doctor_num = c.doctor_num join department b on a.dep_num = b.dep_num "\
-          " GROUP BY a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email,to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD') order by doctor_num) nnn ) nn "\
-          " where r_num between {} and {} ".format(start, end)
+        sql = "select nn.* from ( select nnn.*, rownum r_num from (SELECT a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email, " \
+              "to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD'),count(c.doctor_num) as cnt, (select count(*) from dl_doctor) " \
+              ",nvl(round(avg(review_rating),0),'0')" \
+              " FROM dl_doctor a LEFT JOIN appointment c ON a.doctor_num = c.doctor_num join department b on a.dep_num = b.dep_num left join doc_review e on a.doctor_num = e.doctor_num" \
+              " GROUP BY a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email,to_char(d_regdate,'YYYY-MM-DD'), " \
+              " to_char(d_retire_date,'YYYY-MM-DD') order by doctor_num ) nnn ) nn "\
+              " where r_num between {} and {} ".format(start, end)
     try:
         cursor.execute(sql)
         doctor_List = cursor.fetchall()

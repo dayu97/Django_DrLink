@@ -109,7 +109,6 @@ def home(request):
         p_num = getPatient_num()
         patient_sumprice=[]
         d_num=[]
-        reviewAvg=[]
         for a in appointment_result:
             ap_p_num.append(a[4])
         for i,a in enumerate(ap_p_num):
@@ -122,15 +121,10 @@ def home(request):
 
         for a in doctorList_result:
             d_num.append(a[0])
-        for i,a in enumerate(d_num):
-            if getReviewAVG(a)== None:
-                reviewAvg.append(0)
-            else:
-                reviewAvg.append(getReviewAVG(a)[0])
         for i in p_num:
             lastAppointment.append(getAPLatest(i[0])[0])
         return render(request, "drLink/index.html",{'twoyear':two_year,'lastyear':last_year,'aiMaleFav':aiMaleFav,'aiFemaleFav':aiFemaleFav,
-                                                    'aiGenderFav':aiGenderFav,'gender':gender,'reviewAvg':reviewAvg,'patient_sumprice':patient_sumprice,
+                                                    'aiGenderFav':aiGenderFav,'gender':gender,'patient_sumprice':patient_sumprice,
                                                     'patient_type':patient_type,'lastAppointment':lastAppointment,'seosonPrice':seosonPrice,'priceChart':priceChart,
                                                     'newChart':newChart,'appointmentList':appointment_result,'doctorList':doctorList_result,'patientList':patientListresult,
                                                     'sum_price':sum_price,'patient_count':patient_count})
