@@ -493,14 +493,22 @@ $(function(){
 						<tr>
 							<td>
 								<h2 class="table-avatar">
-								<a href="doctor_profile?doctor_num={{appointment.0}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/doctor/profileImg/{{appointment.2}}" alt="User Image"></a>
+								{% if appointment.2 != None %}
+							<a href="doctor_profile?doctor_num={{appointment.0}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/doctor/profileImg/{{appointment.2}}" alt="User Image"></a>
+								{% else %}
+							<a href="doctor_profile?doctor_num={{appointment.0}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/img/unnamed.png" alt="User Image"></a>
+								{% endif %}
 								<a href="doctor_profile?doctor_num={{appointment.0}}">{{appointment.1}}</a>
 								</h2>
 							</td>
 							<td>
 								<h2 class="table-avatar">
-								<a href="patient_profile?patient_num={{appointment.4}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/patient/profileImg/{{appointment.6}}" alt="User Image"></a>
-								<a href="patient_profile?patient_num={{appointment.4}}">{{appointment.5}}</a>
+								{% if appointment.6 != None %}
+							<a href="patient_profile?patient_num={{appointment.4}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/patient/profileImg/{{appointment.6}}" alt="User Image"></a>
+								{% else %}
+							<a href="patient_profile?patient_num={{appointment.4}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/img/unnamed.png" alt="User Image"></a>
+								{% endif %}
+									<a href="patient_profile?patient_num={{appointment.4}}">{{appointment.5}}</a>
 								</h2>
 							</td>
 							<td>{{appointment.3}}</td>
@@ -551,7 +559,11 @@ $(function(){
 								<tr>
 									<td>
 										<h2 class="table-avatar">
+											{% if doctor.2 != None %}
 										<a href="doctor_profile?doctor_num={{doctor.0}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/doctor/profileImg/{{doctor.2}}" alt="User Image"></a>
+											{% else %}
+										<a href="doctor_profile?doctor_num={{doctor.0}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/img/unnamed.png" alt="User Image"></a>
+											{% endif %}
 										<a href="doctor_profile?doctor_num={{doctor.0}}">{{doctor.1}}</a>
 										</h2>
 									</td>
@@ -600,7 +612,11 @@ $(function(){
 								<tr>
 									<td>
 										<h2 class="table-avatar">
+											{% if patient.3 != None %}
 											<a href="patient_profile?patient_num={{patient.10}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/patient/profileImg/{{patient.3}}" alt="User Image"></a>
+											{% else %}
+										<a href="patient_profile?patient_num={{patient.10}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/img/unnamed.png" alt="User Image"></a>
+											{% endif %}
 											<a href="patient_profile?patient_num={{patient.10}}">{{patient.2}} </a>
 										</h2>
 									</td>

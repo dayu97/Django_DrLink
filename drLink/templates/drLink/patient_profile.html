@@ -22,7 +22,11 @@
 								<div class="row align-items-center">
 									<div class="col-auto profile-image">
 										<a>
-											<img class="rounded-circle" alt="User Image" src="{{baseUrl}}/patient/profileImg/{{patient.12}}">
+											{% if patient.12 != None %}
+											<img class="avatar-img rounded-circle" src="{{baseUrl}}/patient/profileImg/{{patient.12}}" alt="User Image"></a>
+											{% else %}
+										<img class="avatar-img rounded-circle" src="{{baseUrl}}/img/unnamed.png" alt="User Image"></a>
+											{% endif %}
 										</a>
 									</div>
 									<div class="col profile-user-info">

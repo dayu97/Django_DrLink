@@ -93,7 +93,11 @@ $(document).ready(function(){
 								<td class="text-center">D00<span>{{doctor.0}}</span></td>
 								<td class="text-center">
 									<h2 class="table-avatar">
+								{% if doctor.2 != None %}
 										<a href="doctor_profile?doctor_num={{doctor.0}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/doctor/profileImg/{{doctor.2}}" alt="User Image"></a>
+								{% else %}
+										<a href="doctor_profile?doctor_num={{doctor.0}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/img/unnamed.png" alt="User Image"></a>
+								{% endif %}
 										<a href="doctor_profile?doctor_num={{doctor.0}}">{{doctor.1}}</a>
 									</h2>
 								</td>
@@ -125,7 +129,11 @@ $(document).ready(function(){
 								<td class="text-center">D00<span>{{doctor.0}}</span></td>
 								<td class="text-center">
 									<h2 class="table-avatar">
+								{% if doctor.2 != None %}
 										<a href="doctor_profile?doctor_num={{doctor.0}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/doctor/profileImg/{{doctor.2}}" alt="User Image"></a>
+								{% else %}
+										<a href="doctor_profile?doctor_num={{doctor.0}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/img/unnamed.png" alt="User Image"></a>
+								{% endif %}
 										<a href="doctor_profile?doctor_num={{doctor.0}}">{{doctor.1}}</a>
 									</h2>
 								</td>

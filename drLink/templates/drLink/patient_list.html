@@ -42,7 +42,11 @@
 													<td class="text-center">{{patient.1}}</td>
 													<td class="text-center">
 														<h2 class="table-avatar">
-															<a href="patient_profile?patient_num={{patient.10}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/patient/profileImg/{{patient.3}}" alt=""></a>
+														{% if patient.3 != None %}
+														<a href="patient_profile?patient_num={{patient.10}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/patient/profileImg/{{patient.3}}" alt="User Image"></a>
+														{% else %}
+													<a href="patient_profile?patient_num={{patient.10}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/img/unnamed.png" alt="User Image"></a>
+														{% endif %}
 															<a href="patient_profile?patient_num={{patient.10}}">{{patient.2}} </a>
 														</h2>
 													</td>
