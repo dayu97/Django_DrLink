@@ -28,20 +28,17 @@
 				  <div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<form class="form-inline my-2 my-lg-0 search" method="post" name="searchForm">
 						{% csrf_token %}
-						<select style="width: 6em;" class="custom-select custom-select-md" name="type">
+						<select style="width: 6em; margin-right:10px" class="custom-select custom-select-md" name="type">
                                 <option value="d_name">의사명</option>
                                 <option value="dep_name">진료과목</option>
                                 <option value="p_name">환자명</option>
                         </select>
-						<input type="text" name="search_keyword" value="" class="form-control form-control-md" style="width: 15em;" placeholder="검색어를 입력해주세요.">
+						<input type="text" name="search_keyword" value="" class="form-control form-control-md" style="width: 15em; margin-right:10px" placeholder="검색어를 입력해주세요.">
 						<input class="btn btn-outline-success my-2 my-sm-0" type="submit" id="searchbtn" onclick="search()" value="검색">
 					</form>
 				  </div>
 				</nav>
 				<div class="table-responsive">
-					{% if q %}
-					<h5>'{{ q }}' 검색 결과입니다.</h5>
-					{% endif %}
 					<table class="table table-striped table-bordered datatable table-center mb-0" id="appoinment_table">
 						<thead>
 							<tr>

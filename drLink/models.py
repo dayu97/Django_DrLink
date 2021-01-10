@@ -320,7 +320,7 @@ def getAppointmentList(p_num, number_page):
             " to_char(reg_date,'YYYY-MM-DD') ,(select count(*) from appointment where appointment_date > to_char(sysdate, 'yyyy-mm-dd')) as cnt,(select count(*) from appointment) as allcnt" \
             " from appointment a, dl_doctor b, dl_user c, department d " \
             " where a.doctor_num=b.doctor_num and a.patient_num=c.patient_num and b.dep_num=d.dep_num and appointment_date > to_char(sysdate, 'yyyy-mm-dd')"\
-            " order by appointment_date ) nnn ) nn where r_num between 1 and 10 order by appointment_num  "
+            " order by appointment_num desc, appointment_date  ) nnn ) nn where r_num between 1 and 10 order by appointment_num desc "
     else:
         start, end = p_num * number_page - 9, p_num * number_page
         sql = "select nn.* from ( select nnn.*, rownum r_num from ("\
@@ -328,7 +328,7 @@ def getAppointmentList(p_num, number_page):
             " to_char(reg_date,'YYYY-MM-DD') ,(select count(*) from appointment where appointment_date > to_char(sysdate, 'yyyy-mm-dd')) as cnt,(select count(*) from appointment) as allcnt"\
             " from appointment a, dl_doctor b, dl_user c, department d "\
             " where a.doctor_num=b.doctor_num and a.patient_num=c.patient_num and b.dep_num=d.dep_num and appointment_date > to_char(sysdate, 'yyyy-mm-dd')"\
-            " order by appointment_date ) nnn ) nn where r_num between {} and {} order by appointment_num ".format(start, end)
+            " order by appointment_num desc, appointment_date ) nnn ) nn where r_num between {} and {} order by appointment_num desc ".format(start, end)
     try:
         cursor.execute(sql)
         n_boardList = cursor.fetchall()
@@ -393,6 +393,40 @@ def getDoctorList(p_num, number_page):
         doctor_List = cursor.fetchall()
         cursor.close()
         return doctor_List
+    except Exception as e:
+        print(e)
+        print("실패")
+    finally:
+        conn.close()
+
+
+def getDoctorSearchList(p_num, number_page,search_keyword,type):
+    conn = ora.connect(database)
+    cursor = conn.cursor()
+    p_num = int(p_num)
+    if p_num == 1:
+     sql = "select nn.* from ( select nnn.*, rownum r_num from (SELECT a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email, " \
+           "to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD'),count(c.doctor_num) as cnt, (select count(*) from dl_doctor) " \
+           ",nvl(round(avg(review_rating),0),'0')" \
+           " FROM dl_doctor a LEFT JOIN appointment c ON a.doctor_num = c.doctor_num join department b on a.dep_num = b.dep_num left join doc_review e on a.doctor_num = e.doctor_num" \
+           " GROUP BY a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email,to_char(d_regdate,'YYYY-MM-DD'), " \
+           " to_char(d_retire_date,'YYYY-MM-DD') order by doctor_num ) nnn ) nn "\
+          " where r_num between 1 and {} and {} like '%{}%' ".format(number_page,type, search_keyword)
+    else:
+        start, end = p_num * number_page-9, p_num * number_page
+        sql = "select nn.* from ( select nnn.*, rownum r_num from (SELECT a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email, " \
+              "to_char(d_regdate,'YYYY-MM-DD'), to_char(d_retire_date,'YYYY-MM-DD'),count(c.doctor_num) as cnt, (select count(*) from dl_doctor) " \
+              ",nvl(round(avg(review_rating),0),'0')" \
+              " FROM dl_doctor a LEFT JOIN appointment c ON a.doctor_num = c.doctor_num join department b on a.dep_num = b.dep_num left join doc_review e on a.doctor_num = e.doctor_num" \
+              " GROUP BY a.doctor_num, a.d_name, a.d_photo, b.dep_name, a.dep_num, a.d_phone_num, a.d_email,to_char(d_regdate,'YYYY-MM-DD'), " \
+              " to_char(d_retire_date,'YYYY-MM-DD') order by doctor_num ) nnn ) nn "\
+              " where r_num between {} and {} and {} like '%{}%'".format(start, end,type, search_keyword)
+    try:
+        cursor.execute(sql)
+        doctor_List = cursor.fetchall()
+        cursor.close()
+        return doctor_List
+
     except Exception as e:
         print(e)
         print("실패")
@@ -599,6 +633,7 @@ def getN_boardList(p_num, number_page):
 
 
 def update_noticeBoard(h_num):
+    print("들어온 보드넘버 : ", h_num['hospital_board_num'])
     conn = ora.connect(database)
     cursor = conn.cursor()
     sql = "update hospital_board set hospital_photo=:hospital_photo, hospital_title=:hospital_title, hospital_content=:hospital_content where hospital_board_num=:hospital_board_num"

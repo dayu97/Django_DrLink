@@ -53,7 +53,7 @@
 												{% if h.1 == None or h.1 == "" %}
 												<a href="notice_details?h_num={{h.0}}"><img class="img-fluid" src="{{baseUrl}}/img/blog/blog-01.jpg" alt="Post Image" style="height:250px;"></a>
 												{% else %}
-												<a href="notice_details?h_num={{h.0}}"><img class="img-fluid" src="{{baseUrl}}/img/{{h.1}}" alt="Post Image" style="height:250px;"></a>
+												<a href="notice_details?h_num={{h.0}}"><img class="img-fluid" src="{{baseUrl}}/img/blog/{{h.1}}" alt="Post Image" style="height:250px;"></a>
 												{% endif %}
 											</div>
 											<div class="blog-content">
@@ -76,7 +76,8 @@
 											</div>
 											<div class="row pt-4">
 												<div class="col"><a href="edit_notice_board?h_num={{h.0}}" class="text-success"><i class="fas fa-edit"></i> 수정</a></div>
-												<div class="col text-right"><a href="delete_notice_board?h_num{{h.0}}" class="text-danger" >
+												<input type="hidden" name="h_num" value="{{h.0}}">
+												<div class="col text-right"><a class="text-danger" id="delete_board" >
 													<i class="fas fa-trash-alt"></i> 삭제</a></div>
 											</div>
 										</div>
@@ -157,8 +158,8 @@
 <script src="{{baseUrl}}/js/jquery-3.2.1.min.js"></script>
 <script type="text/javascript">
 	$(function(){
-		$('a.text-danger').click(function(){
-			var h_num = $(this).parents('div.pt-3').find('a.text-success').attr('href').split('=')[1]
+		$('#delete_board').click(function(){
+			var h_num = $('input[name=h_num]').val()
 			if(confirm("게시글을 삭제하시겠습니까 ?")) {
 				$(this).attr('href', 'delete_notice_board?h_num='+h_num)
 			}

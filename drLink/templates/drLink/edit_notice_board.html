@@ -49,7 +49,7 @@
 												<div class="form-group">
 													<label>제목<span class="text-danger">*</span></label>
 													<input type="hidden" name="service_id" id="service_id" value="18">
-													<input class="form-control" type="text" name="hospital_title" value="{{h_edit.2}}" required="">
+													<input class="form-control" type="text" name="hospital_title" value="{{h_edit.3}}" required="">
 												</div>
 											</div>
 										</div>
@@ -64,45 +64,11 @@
 														<option value="1" selected="selected">공지사항</option>
 														<option value="2" >건강정보</option>
 														<option value="3">자주하는질문</option>
-														<!--<option value="4">Cleaning</option>
-														 <option value="5">Electrical</option>
-														<option value="6">Carpentry</option>
-														<option value="7">Computer</option>
-														<option value="8">Painting</option>
-														<option value="9">Car Wash</option>
-														<option value="10">Category Test</option>
-														<option value="11">dfdf</option>
-														<option value="12">Equipment</option>
-														<option value="13">Test category1</option>
-														<option value="14">Farming</option>
-														<option value="15">Test Category02</option>
-														<option value="16">Laundry</option> -->
 													</select>
 												</div>
 											</div>
 
-											<!--
-											<div class="col-lg-6">
-												<div class="form-group">
-													<label>분야 선택 <span class="text-danger">*</span></label>
-													<select class="form-control" name="subcategory"> 
-													<option value="5">공지사항</option>
-													<option value="6">병원소식</option>
-													<option value="7">피부과</option>
-													<option value="8">안과</option>
-													<option value="9">정신건강의학과</option>
-													<option value="10">원무관련</option>
-													<option value="11">진료관련</option>
-													<option value="12">홈페이지 이용</option>
-													 <option value="13">Full Car Wash</option>
-													<option value="14" selected="selected">Testing category</option>
-													<option value="15">Test Sub category</option>
-													<option value="16">Harvesting pine</option>
-													<option value="17">Test Sub category name</option>
-													<option value="18">Test Sub category name</option>
-												</select>
-												</div>
-											</div> -->
+
 
 										</div>
 									</div>
@@ -112,7 +78,7 @@
 											<div class="col-lg-12">
 												<div class="form-group">
 													<label>내용 <span class="text-danger">*</span></label>
-													<textarea id="about" class="form-control service-desc" name="hospital_content">{{h_edit.3}}</textarea>
+													<textarea id="about" class="form-control service-desc" name="hospital_content">{{h_edit.4}}</textarea>
 												</div>
 											</div>
 										</div>
@@ -126,10 +92,10 @@
 													<span>이미지 첨부 *</span>
 													<input type="file" name="hospital_photo" id="board_img" multiple="" accept="image/jpeg, image/png, image/gif,">
 													<div>
-														{% if h_edit.1 != None and h_edit.1 != "" %}
-															<img src="{{baseUrl}}/img/blog/{{h_edit.1}}" id="targetImg" style="width:300px">
+														{% if h_edit.2 != None and h_edit.2 != "" %}
+															<img class="img-fluid" src="{{baseUrl}}/img/blog/{{h_edit.2}}" id="targetImg" alt="Post Image" style="height:250px;">
 														{% else %}
-															<img src="" id="targetImg" style="width:300px">
+															<img class="img-fluid" src="{{baseUrl}}/img/blog/blog-01.jpg" id="targetImg" alt="Post Image" style="height:250px;">
 														{% endif %}
 												 	</div>
 												</div>
@@ -234,7 +200,7 @@
 <script src="{{baseUrl}}/js/jquery-3.2.1.min.js"></script>
 <script type="text/javascript">
 $(function(){
-	let hospital_board_num = {{h_edit.0}}
+	let hospital_board_num = {{h_edit.1}}
 	$('.submit-btn').click(function(){
 		let img = $('#targetImg').attr('src').split('/')
 		if( img != null && img != "") {

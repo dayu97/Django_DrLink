@@ -57,4 +57,5 @@ urlpatterns=[
     path('jsonAIT', views.jsonAIT),
     path('insertAuthNumber',views.insertAuthNumber),
     path('appointment_search_list',views.appointment_search_list),
+    path('doctor_search_list',views.doctor_search_list)
 ];

@@ -203,7 +203,23 @@ def appointment_search_list(request):
     page_num = [i for i in range(1, page_num + 1)]
     return render(request, "drLink/appointment_list.html", {'appointment_search_list': appointment_search_list, 'search_p_num': page_num})
 
+def doctor_search_list(request):
+    if 'id' not in request.session:
+        return redirect("/drLink")
+    number_page = 10
+    search_keyword=request.POST['search_keyword']
+    type=request.POST['type']
+    try:
+        if request.GET['p_num'] != None:
+            doctor_search_list = getDoctorSearchList(request.GET['p_num'], number_page,search_keyword,type)
+    except Exception as ex:
+        print(ex)
+        doctor_search_list = getDoctorSearchList(1, number_page, search_keyword, type)
+        print("원래 페이지: ", len(doctor_search_list))
 
+    page_num = math.ceil(len(doctor_search_list)/ number_page)
+    page_num = [i for i in range(1, page_num + 1)]
+    return render(request, "drLink/doctor_list.html", {'doctor_search_list': doctor_search_list, 'search_p_num': page_num})
 
 
 def blog_details(request):
@@ -431,7 +447,9 @@ def edit_notice_board(request):
     if 'id' not in request.session: #로그인 필터
         return redirect("/drLink")
     h_num = request.GET['h_num']
+    print("edit 들어온 h_num = ", h_num)
     h_edit = getH_board_details(h_num)
+    print(h_edit)
     return render(request, "drLink/edit_notice_board.html", {'h_edit':h_edit})
 
 def health_info(request):
@@ -540,6 +558,7 @@ def update_notice_board(request):
     if 'id' not in request.session: #로그인 필터
         return redirect("/drLink")
     if 'hospital_photo' in request.FILES:
+        print("files 존재")
         file = request.FILES['hospital_photo']
         print("사진 타입:",type(file))
         file_name = file.name
@@ -555,6 +574,7 @@ def update_notice_board(request):
         file_name = None
     up_H_board = list([request.POST['hospital_board_num'], request.POST['hospital_title'], request.POST['hospital_content']])
     h_list = {'hospital_board_num': up_H_board[0], 'hospital_photo': file_name, 'hospital_title':up_H_board[1], 'hospital_content': up_H_board[2]}
+    print("up_H_board : ", h_list)
     update_noticeBoard(h_list)
     return redirect('/drLink/notice')
 

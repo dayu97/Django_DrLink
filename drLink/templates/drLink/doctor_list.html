@@ -54,27 +54,39 @@ $(document).ready(function(){
 						<a  data-toggle="modal" href="#auth_number_modal" class="btn btn-outline-success my-2 my-sm-0">
 							회원 가입 인증번호 발급하기
 						</a>
-					  <div class="auth_check"></div>
+					  <div class="auth_check m-2"></div>
 
 				  </div>
+				<div class="nav navbar-nav navbar-right" id="search">
+				<form class="form-inline my-2 my-lg-0 search" method="post" name="searchForm">
+					{% csrf_token %}
+					<select style="width: 6em; margin-right:10px" class="custom-select custom-select-md" name="type">
+							<option value="d_name">의사명</option>
+							<option value="dep_name">진료과목</option>
+					</select>
+					<input type="text" name="search_keyword" value="" class="form-control form-control-md" style="width: 15em; margin-right:10px" placeholder="검색어를 입력해주세요.">
+					<input class="btn btn-outline-success my-2 my-sm-0" type="submit" id="searchbtn" onclick="search()" value="검색">
+				</form>
+			  </div>
 				</nav>
 
 				<div class="table-responsive">
 					<table class="datatable table table-hover table-striped table-bordered table-center mb-0 doctorTable">
 						<thead>
 							<tr>
-								<th class="text-center" style="cursor:pointer" >No</th>
-								<th class="text-center" style="cursor:pointer" >의사명</th>
-								<th class="text-center" style="cursor:pointer" >진료과목</th>
-								<th class="text-center" style="cursor:pointer" >입사일</th>
-								<th class="text-center" style="cursor:pointer" >연락처</th>
-								<th class="text-center" style="cursor:pointer" >상태</th>
-								<th class="text-center" style="cursor:pointer" ></th>
+								<th class="text-center" >No</th>
+								<th class="text-center" >의사명</th>
+								<th class="text-center" >진료과목</th>
+								<th class="text-center" >입사일</th>
+								<th class="text-center" >연락처</th>
+								<th class="text-center" style="cursor:pointer" onclick="state()">상태</th>
+								<th class="text-center" ></th>
 
 							</tr>
 						</thead>
 						<tbody>
 							<!--  의사 리스트 -->
+							{% if doctorList %}
 							{% for doctor in doctorList %}
 							<tr>
 								<input type="hidden" name="doctor_num" value="{{doctor.0}}" >
@@ -105,6 +117,39 @@ $(document).ready(function(){
 							</tr>
 							<!--  의사 리스트 -->
 						{% endfor %}
+						{% endif %}
+						{% if doctor_search_list %}
+							{% for doctor in doctor_search_list %}
+							<tr>
+								<input type="hidden" name="doctor_num" value="{{doctor.0}}" >
+								<td class="text-center">D00<span>{{doctor.0}}</span></td>
+								<td class="text-center">
+									<h2 class="table-avatar">
+										<a href="doctor_profile?doctor_num={{doctor.0}}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{baseUrl}}/doctor/profileImg/{{doctor.2}}" alt="User Image"></a>
+										<a href="doctor_profile?doctor_num={{doctor.0}}">{{doctor.1}}</a>
+									</h2>
+								</td>
+								<td class="text-center">{{doctor.3}}</td>
+								<td class="text-center">{{ doctor.7|slice:"0:4" }}년 {{ doctor.7|slice:"5:7" }}월 {{ doctor.7|slice:"8:10" }}일</td>
+								<td class="text-center">{{ doctor.5|slice:"0:3" }}-{{ doctor.5|slice:"3:7" }}-{{ doctor.5|slice:"7:11" }}</td>
+								<td class="text-center">
+									{% if doctor.8 %}
+									<span class="badge badge-pill bg-danger-light">퇴직</span>
+									{% else %}
+									<span class="badge badge-pill bg-success-light">재직</span>
+									{% endif %}
+								</td>
+								<td class="text-center">
+									<div class="actions">
+										<a  data-toggle="modal" href="#delete_modal" class="btn btn-sm bg-danger-light">
+											<i class="fe fe-trash"></i> 삭제
+										</a>
+									</div>
+								</td>
+							</tr>
+							<!--  의사 리스트 -->
+						{% endfor %}
+						{% endif %}
 						</tbody>
 					</table>
 				</div>
@@ -115,11 +160,21 @@ $(document).ready(function(){
 				<div class="blog-pagination">
 					<nav>
 						<ul class="pagination justify-content-center">
-							{% for p in p_num %}
-							<li class="page-item">
-								<a class="page-link" href="doctor_list?p_num={{p}}">{{p}}</a>
-							</li>
-							{% endfor %}
+								{% if p_num %}
+								{% for p in p_num %}
+								<li class="page-item">
+									<a class="page-link" href="doctor_list?p_num={{p}}">{{p}}</a>
+								</li>
+								{% endfor %}
+								{% endif %}
+
+								{% if search_p_num %}
+								{% for p in search_p_num %}
+								<li class="page-item">
+									<a class="page-link" href="doctor_search_list?p_num={{p}}">{{p}}</a>
+								</li>
+								{% endfor %}
+								{% endif %}
 						</ul>
 					</nav>
 				</div>
@@ -220,4 +275,16 @@ $(document).ready(function(){
 </div>
 </div>
 <!-- /auth_number_modal -->
+
+<script type="text/javascript">
+    function search(){
+		var search_keyword = $('input[name=search_keyword]').val();
+		$('.search').attr("action","doctor_search_list").submit();
+    };//검색
+
+    function state(){
+    	alert()
+    };//재직퇴직
+</script>
+
 {% endblock content %}
