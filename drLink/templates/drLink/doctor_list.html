@@ -20,6 +20,8 @@ $(document).ready(function(){
 					$('.auth_check').css('color', 'red');
 				}
 			});//ajax
+			$("#auth_number_modal").remove();
+			$("div.modal-backdrop").removeAttr("class");
 		});//클릭버튼
 
 
@@ -262,7 +264,7 @@ $(document).ready(function(){
 <!-- /Delete Modal -->
 
 <!-- auth_number_modal -->
-<div class="modal fade" id="auth_number_modal" aria-hidden="true" role="dialog">
+<div class="modal" id="auth_number_modal" aria-hidden="true" role="dialog">
 <div class="modal-dialog modal-dialog-centered" role="document" >
 <div class="modal-content">
 	<div class="modal-body">
@@ -272,7 +274,7 @@ $(document).ready(function(){
 			<form method="post">
 				{% csrf_token %}
 				<input type="button" class="btn btn-primary get_auth_num" value="발급하기">
-				<button type="button" class="btn btn-danger" data-dismiss="modal">취소하기</button>
+				<button type="button" class="btn btn-danger" data-dismiss="modal">닫기</button>
 			</form>
 		</div>
 		<div id="auth_num_chk">
