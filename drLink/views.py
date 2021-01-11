@@ -1,6 +1,5 @@
 from django.http import request
 from django.shortcuts import render, redirect
-
 # Create your views here.
 from drLink.models import *
 from django.views.decorators.csrf import csrf_protect
@@ -35,16 +34,31 @@ import matplotlib.pyplot as plt
 def jsonAIT(request):   # spring 연동
     jsonCall = request.GET.get("callback")
     jsonData = request.GET.get("img")
+    jsonModel = int(request.GET.get("model"))
     # model.json 파일 열기
-    json_file = open("/home/kosmo1/notedir/work1127/eyes_model.json", "r")
-    origindir = "/home/kosmo1/notedir/work1127/Modeltrain/eyeTest"
-    categories = os.listdir(origindir)
+    print("들어온 jsonModel Type :",type(jsonModel))
+    modelSort = ""
+    if jsonModel == 1:
+        json_file = open("/home/kosmo1/notedir/work1127/eyes_model.json", "r")
+        origindir = "/home/kosmo1/notedir/work1127/Modeltrain/eyes"
+        categories = os.listdir(origindir)
+        modelSort = "eyes"
+    elif jsonModel == 2:
+        json_file = open("/home/kosmo1/notedir/work1127/hair_model.json", "r")
+        origindir = "/home/kosmo1/notedir/work1127/Modeltrain/hair"
+        categories = os.listdir(origindir)
+        modelSort = "hair"
+    else:
+        json_file = open("/home/kosmo1/notedir/work1127/skin_model.json", "r")
+        origindir = "/home/kosmo1/notedir/work1127/Modeltrain/skin"
+        categories = os.listdir(origindir)
+        modelSort = "skin"
     loaded_model_json = json_file.read()
     json_file.close()
     # json파일로부터 model 로드하기
     loaded_model = model_from_json(loaded_model_json)
     # 로드한 model에 weight 로드하기
-    loaded_model.load_weights("/home/kosmo1/notedir/work1127/eyes_model.h5")
+    loaded_model.load_weights("/home/kosmo1/notedir/work1127/{}_model.h5".format(modelSort))
     loaded_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     seed = 5
     tf.compat.v1.set_random_seed(seed)
@@ -62,17 +76,21 @@ def jsonAIT(request):   # spring 연동
     X = np.array(data)
     X = X.astype(float) / 255
     prediction = loaded_model.predict(X)
-    print("prediction :",prediction)
+    print("prediction 확률 :",prediction)
     predict = int(prediction[0][np.argmax(prediction)] * 100)
-    j_file = {'predict': predict, 'disease': categories[np.argmax(prediction)]}
+    print("{}% 의 확률로 예측 결과는: {} 입니다.".format(predict,categories[np.argmax(prediction[0])]))
+    if predict <= 1:
+        disease = '정상'
+        predict = 100
+    else:
+        disease = categories[np.argmax(prediction)]
+    j_file = {'predict': predict, 'disease': disease }
     if jsonCall:
         response = HttpResponse("%s(%s);" % (jsonCall, json.dumps(j_file,ensure_ascii=False)))
         response["Content-type"] = "text/javascript; charset=utf-8"
     else:
         response = HttpResponse(json.dumps(j_file,ensure_ascii=False))
         response["Content-type"] = "application/json; charset=utf-8"
-    # callback + "(" + result + ")"    callback + "("+ result +")"
-    # return HttpResponse(json.dumps(aa), content_type='application/json', safe=False)
     return response
 
 def home(request):

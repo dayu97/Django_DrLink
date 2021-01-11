@@ -253,7 +253,7 @@ def getSpecialitiesList():
 def insertSpecialitysave(dep_name):
     conn = ora.connect(database)
     cursor = conn.cursor()
-    sql = "insert into department values(dep_num_seq.nextval, :dep_name)"
+    sql = "insert into department values((select max(dep_num)+10 from department), :dep_name)"
     cursor.execute(sql, dep_name=dep_name)
     cursor.close()
     conn.commit()
