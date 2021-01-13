@@ -550,7 +550,6 @@ $(function(){
 								<tr>
 								<th>의사명</th>
 								<th>진료과목</th>
-								<th>월 예약건수</th>
 								<th>평점</th>
 								</tr>
 							</thead>
@@ -568,7 +567,6 @@ $(function(){
 										</h2>
 									</td>
 									<td>{{doctor.3}}</td>
-									<td>{{doctor.9}}</td>
 									<td>
 										{% for i in '01234'|make_list %}
 											{% if doctor.11 > forloop.counter0 %}

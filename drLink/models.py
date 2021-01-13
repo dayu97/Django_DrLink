@@ -3,9 +3,7 @@ import cx_Oracle as ora
 import string
 import random
 # Create your models here.
-#database = 'final_dr/test00@192.168.0.44:1522/orcl1'
-# database = 'drLink/123@123.214.63.87:1521/orcl'
-database = 'drlink/drlink00@192.168.0.52/orcl'
+database = 'drlink/drlink00@192.168.0.14/orcl'
 #database = 'test/test00@192.168.0.52/orcl'
 # Create your models here.
 
@@ -99,6 +97,8 @@ def getSumPrice() :
     re = cursor.fetchone()
     cursor.close()
     conn.close()
+    print(sql)
+    print(re)
     return re
 
 #분기별 수익 : 김다유
@@ -315,7 +315,7 @@ def getAppointmentList(p_num, number_page):
     cursor = conn.cursor()
     p_num = int(p_num)
     if p_num == 1:
-        sql = "select nn.* from ( select nnn.*, rownum r_num from (" \
+        sql = " select nn.* from ( select nnn.*, rownum r_num from (" \
             " select a.doctor_num, d_name, d_photo, d.dep_name, a.patient_num, p_name, p_photo, appointment_num, appointment_date, appointment_time, " \
             " to_char(reg_date,'YYYY-MM-DD') ,(select count(*) from appointment where appointment_date > to_char(sysdate, 'yyyy-mm-dd')) as cnt,(select count(*) from appointment) as allcnt" \
             " from appointment a, dl_doctor b, dl_user c, department d " \
@@ -524,19 +524,20 @@ def getTransactionsList(p_num, number_page):
     p_num = int(p_num)
     if p_num == 1:
         sql = "select nn.* from (select nnn.*, rownum r_num from (" \
-              " select a.prescription_num,c.patient_num,c.p_name,d.d_photo,d.doctor_num,d.d_name,e.dep_name, a.prescription_date,a.price,b.paydate,a.payment_check,(select count(*) from prescription) as cnt" \
+              " select a.prescription_num,c.patient_num,c.p_name,d.d_photo,d.doctor_num,d.d_name,e.dep_name, a.prescription_date,a.price,to_char(b.paydate,'yyyy/mm/dd'),a.payment_check,(select count(*) from prescription) as cnt" \
               " from prescription a, payment_record b, dl_user c, dl_doctor d, department e where b.prescription_num(+)=a.prescription_num" \
               " and a.patient_num = c.patient_num and a.doctor_num = d.doctor_num and d.dep_num = e.dep_num order by a.prescription_num desc) nnn ) nn where r_num between 1 and {} ".format(number_page)
     else:
         start, end = p_num * number_page - 9, p_num * number_page
         sql = "select nn.* from (select nnn.*, rownum r_num from (" \
-              " select a.prescription_num,c.patient_num,c.p_name,d.d_photo,d.doctor_num,d.d_name,e.dep_name, a.prescription_date,a.price,b.paydate,a.payment_check,(select count(*) from prescription) as cnt" \
+              " select a.prescription_num,c.patient_num,c.p_name,d.d_photo,d.doctor_num,d.d_name,e.dep_name, a.prescription_date,a.price,to_char(b.paydate,'yyyy/mm/dd'),a.payment_check,(select count(*) from prescription) as cnt" \
               " from prescription a, payment_record b, dl_user c, dl_doctor d, department e where b.prescription_num(+)=a.prescription_num" \
               " and a.patient_num = c.patient_num and a.doctor_num = d.doctor_num and d.dep_num = e.dep_num order by a.prescription_num desc) nnn ) nn where r_num between {} and {} ".format(start, end)
     try:
         cursor.execute(sql)
         re = cursor.fetchall()
         cursor.close()
+        print(re)
         return re
     except Exception as e:
         print(e)

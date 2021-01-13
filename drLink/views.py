@@ -104,14 +104,6 @@ def home(request):
         newChart = getNewChart()
         sum_price = getSumPrice()
         patient_count = getPatientCount()
-        ##########################
-        # data = getGender()
-        # data = pd.DataFrame(data, columns=['gender'])
-        # female = data[data['gender'] == '2'].count()
-        # male = data[data['gender'] == '1'].count()
-        # gender = pd.concat([female, male], axis=1)
-        # print(gender.iloc[0])
-        ##########################
         gender=getGender()
         priceChart=getPriceChart()
         seosonPrice=getSeasonPrice()
